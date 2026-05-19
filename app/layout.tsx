@@ -1,8 +1,10 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/nav/top-nav";
 import { ClerkProvider } from "@clerk/nextjs";
+import { cookies } from "next/headers";
 
 const sansFont = Inter({
   subsets: ["latin"],
@@ -16,11 +18,14 @@ export const metadata: Metadata = {
   description: "Master complex topics with agentic AI",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
   return (
     <html
       lang="en"
@@ -29,7 +34,7 @@ export default function RootLayout({
     >
       <body className="antialiased bg-brand-bg text-brand-text h-full">
         <ClerkProvider>
-          <TopNav />
+          <TopNav isDemo={isDemo} />
           {children}
         </ClerkProvider>
       </body>
