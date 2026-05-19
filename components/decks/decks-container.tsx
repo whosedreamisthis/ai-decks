@@ -1,5 +1,5 @@
 "use client";
-
+import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
 import { Deck } from "@/lib/types";
 import DeckList from "@/components/decks/deck-list";
@@ -21,12 +21,37 @@ const DecksContainer = ({ active, archived }: Props) => {
         numActive={active.length}
         numArchived={archived.length}
       />
-
-      {showActiveDecks ? (
-        <DeckList decks={active} />
-      ) : (
-        <DeckList decks={archived} />
-      )}
+      <div className="w-full min-h-50">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={showActiveDecks ? "active" : "archived"}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15, ease: "easeInOut" }}
+          >
+            {showActiveDecks ? (
+              active.length > 0 ? (
+                <DeckList decks={active} />
+              ) : (
+                <>
+                  <p className="text-center text-sm mt-20">
+                    There are no active decks.
+                  </p>
+                </>
+              )
+            ) : archived.length > 0 ? (
+              <DeckList decks={archived} />
+            ) : (
+              <>
+                <p className="text-center text-sm mt-20">
+                  There are no archived decks.
+                </p>
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
