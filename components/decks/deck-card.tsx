@@ -4,6 +4,7 @@ import { FiArchive } from "react-icons/fi";
 import { UserCheck } from "lucide-react";
 import DeckActions from "@/components/decks/deck-actions";
 import Link from "next/link";
+import ProgressBar from "@/components/common/progress-bar";
 
 const DeckCard = ({ deck }: { deck: Deck }) => {
   return (
@@ -32,15 +33,7 @@ const DeckCard = ({ deck }: { deck: Deck }) => {
               {deck.cards.length} cards
             </p>
             {deck.status === "active" && (
-              <div className="relative h-2 flex-1 max-w-[70%] translate-y-[1.5px]">
-                <div className="absolute inset-0 bg-slate-200/80 dark:bg-stone-700 rounded-full"></div>
-                <div
-                  className={`absolute inset-0 rounded-full bg-brand-blue transition-all duration-30`}
-                  style={{
-                    width: `${Math.min(85, 100)}%`,
-                  }}
-                ></div>
-              </div>
+              <ProgressBar percentage={50} isFull={false} />
             )}
           </div>
         </div>
