@@ -24,8 +24,8 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   }
 
   return (
-    <>
-      <div className="flex  items-center justify-between mx-5 my-2">
+    <div className="sticky top-0 bg-white z-50">
+      <div className=" bg-white flex  items-center justify-between px-5 py-2">
         <Logo />
         {isDemo ? (
           <DropdownMenu>
@@ -79,7 +79,7 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
         )}
       </div>
       <Separator className="mt-2" />
-    </>
+    </div>
   );
 };
 
