@@ -4,10 +4,10 @@ import Logo from "./logo";
 import { Separator } from "@/components/ui/separator";
 import UserProfile from "./user-profile";
 import { usePathname } from "next/navigation";
-
 import { resetDecks } from "@/lib/actions/decks";
 import { Button } from "@/components/ui/button";
 import DemoProfile from "@/components/nav/demo-profile";
+import Link from "next/link";
 
 const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   const pathname = usePathname();
@@ -19,9 +19,13 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   return (
     <div className="sticky top-0 bg-white z-50">
       <div className=" bg-white flex  items-center justify-between px-5 py-2">
-        <Logo />
+        <Link href="/dashboard">
+          <Logo />
+        </Link>
         <Button onClick={() => resetDecks()}>Reset Decks</Button>
-        {isDemo ? <DemoProfile /> : <UserProfile />}
+        <div className="flex items-center">
+          {isDemo ? <DemoProfile /> : <UserProfile />}
+        </div>
       </div>
 
       <Separator className="mt-2" />
