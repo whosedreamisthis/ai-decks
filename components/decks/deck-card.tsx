@@ -19,7 +19,9 @@ const DeckCard = ({ deck }: { deck: Deck }) => {
         <div className="flex flex-col flex-1 min-w-0">
           <p className="text-md font-bold">{deck.title}</p>
           <div className="flex  w items-center justify-between">
-            <p className="text-sm text-muted-foreground shrink-0">200 cards</p>
+            <p className="text-sm text-muted-foreground shrink-0">
+              {deck.cards.length} cards
+            </p>
             {deck.status === "active" && (
               <div className="relative h-2 flex-1 max-w-[70%] translate-y-[1.5px]">
                 <div className="absolute inset-0 bg-slate-200/80 dark:bg-stone-700 rounded-full"></div>

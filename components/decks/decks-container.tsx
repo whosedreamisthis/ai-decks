@@ -11,7 +11,7 @@ interface Props {
 }
 
 const DecksContainer = ({ active, archived }: Props) => {
-  const [showActiveDecks, setShowActiveDecks] = useState(false);
+  const [showActiveDecks, setShowActiveDecks] = useState(true);
 
   return (
     <div className="mb-15 p-5 w-full flex flex-col gap-5">
