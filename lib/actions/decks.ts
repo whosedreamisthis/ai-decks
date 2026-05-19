@@ -9,6 +9,12 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   return db.filter((deck) => filter === "all" || deck.status === filter);
 };
 
+export const resetDecks = async () => {
+  db = MOCK_DECKS;
+  revalidatePath("/dashboard");
+  console.log("resetting decks to mock decks");
+};
+
 export const archiveDeck = async (deckId: string) => {
   db = db.map((deck) =>
     deck.id === deckId ? { ...deck, status: "archived" } : deck,

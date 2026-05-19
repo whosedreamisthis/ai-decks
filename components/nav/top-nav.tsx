@@ -15,6 +15,8 @@ import {
 import { logoutDemo } from "../../lib/actions/auth";
 import { LogIn, LogOut } from "lucide-react";
 import { UserButton, Show, SignInButton } from "@clerk/nextjs";
+import { resetDecks } from "@/lib/actions/decks";
+import { Button } from "@/components/ui/button";
 
 const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   const pathname = usePathname();
@@ -27,6 +29,7 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
     <div className="sticky top-0 bg-white z-50">
       <div className=" bg-white flex  items-center justify-between px-5 py-2">
         <Logo />
+        <Button onClick={() => resetDecks()}>Reset Decks</Button>
         {isDemo ? (
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -76,6 +79,7 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
           </>
         )}
       </div>
+
       <Separator className="mt-2" />
     </div>
   );
