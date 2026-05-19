@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Deck } from "@/lib/types";
 import DeckList from "@/components/decks/deck-list";
+import DeckFilterToggle from "@/components/decks/deck-filter-toggle";
 
 interface Props {
   active: Deck[];
@@ -14,7 +15,12 @@ const DecksContainer = ({ active, archived }: Props) => {
 
   return (
     <div className="m-5">
-      <div>Active/archived</div>
+      <DeckFilterToggle
+        showActiveDecks={showActiveDecks}
+        setShowActiveDecks={setShowActiveDecks}
+        numActive={active.length}
+        numArchived={archived.length}
+      />
       <div>Active Decks:{active.length}</div>
       <div>Archived Decks:{archived.length}</div>
       {showActiveDecks ? (
