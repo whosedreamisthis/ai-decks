@@ -3,6 +3,7 @@ import DashboardSummary from "@/components/dashboard/dashboard-summary";
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import { cookies } from "next/headers";
 import CreateNewDeckCard from "@/components/dashboard/create-new-deck-card";
+import CurrentDecks from "@/components/decks/current-decks";
 
 const DashboardPage = async () => {
   const cookieStore = await cookies();
@@ -16,6 +17,7 @@ const DashboardPage = async () => {
         activeDecksCount={5}
       />
       <CreateNewDeckCard />
+      <CurrentDecks />
     </div>
   );
 };

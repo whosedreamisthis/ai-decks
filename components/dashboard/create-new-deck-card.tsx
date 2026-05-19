@@ -10,8 +10,8 @@ const CreateNewDeckCard = () => {
         <div>
           <p className="text-xl font-semibold">Create New Deck</p>
           <p className="text-sm text-muted-foreground">
-            Enter any topic and instantly create a tailored 10-card study
-            powered by Gemini
+            Enter any topic and instantly generate a custom study session
+            optimized by Gemini.
           </p>
         </div>
         <Button className=" w-fit p-5 bg-brand-mint hover:bg-brand-mint/80">
