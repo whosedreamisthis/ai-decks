@@ -7,7 +7,7 @@ const Page = async () => {
   const activeDecks = await getDecks("active");
   const archivedDecks = await getDecks("archived");
   return (
-    <div className="min-h-screen bg-slate-100 overflow-hidden pb-5">
+    <div className="min-h-screen bg-brand-blue/10 overflow-hidden pb-5">
       <PageHeader title="Your Decks" />
       <DecksContainer active={activeDecks} archived={archivedDecks} />
     </div>

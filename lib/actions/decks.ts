@@ -22,6 +22,12 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   return db.filter((deck) => filter === "all" || deck.status === filter);
 };
 
+export const getDeck = async (deckId: string) => {
+  const db = getDb();
+  // If "all", bypass the filter completely; otherwise, match the status
+  return db.find((deck) => deckId === deck.id);
+};
+
 export const resetDecks = async () => {
   setDb([...MOCK_DECKS]);
   revalidatePath("/dashboard");
