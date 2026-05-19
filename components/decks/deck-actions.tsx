@@ -3,6 +3,7 @@ import React from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiArchive } from "react-icons/fi";
+import { ArchiveRestore } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -11,11 +12,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { archiveDeck, deleteDeck } from "@/lib/actions/decks";
+import { archiveDeck, unarchiveDeck, deleteDeck } from "@/lib/actions/decks";
 
-const CurrentDeckActions = ({ deckId }: { deckId: string }) => {
+const DeckActions = ({
+  deckId,
+  status,
+}: {
+  deckId: string;
+  status: "active" | "archived";
+}) => {
   const handleArchiveDeck = async () => {
     await archiveDeck(deckId);
+  };
+
+  const handleUnarchiveDeck = async () => {
+    await unarchiveDeck(deckId);
   };
 
   const handleDeleteDeck = async () => {
@@ -37,10 +48,21 @@ const CurrentDeckActions = ({ deckId }: { deckId: string }) => {
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="cursor-pointer"
-              onSelect={handleArchiveDeck}
+              onSelect={
+                status === "active" ? handleArchiveDeck : handleUnarchiveDeck
+              }
             >
-              <FiArchive />
-              <span>Archive</span>
+              {status === "active" ? (
+                <div className="flex items-center gap-2">
+                  <FiArchive />
+                  <span>Archive</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <ArchiveRestore />
+                  <span>Unarchive</span>
+                </div>
+              )}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-600 cursor-pointer"
@@ -56,4 +78,4 @@ const CurrentDeckActions = ({ deckId }: { deckId: string }) => {
   );
 };
 
-export default CurrentDeckActions;
+export default DeckActions;

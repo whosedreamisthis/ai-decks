@@ -20,6 +20,7 @@ export const archiveDeck = async (deckId: string) => {
     deck.id === deckId ? { ...deck, status: "archived" } : deck,
   );
   revalidatePath("/dashboard");
+  revalidatePath("/decks");
   console.log("Archiving deck with ID:", deckId);
 };
 
@@ -28,7 +29,10 @@ export const unarchiveDeck = async (deckId: string) => {
     deck.id === deckId ? { ...deck, status: "active" } : deck,
   );
 
-  console.log("Archiving deck with ID:", deckId);
+  revalidatePath("/dashboard");
+  revalidatePath("/decks");
+
+  console.log("Unarchiving deck with ID:", deckId);
 };
 
 export const deleteDeck = async (deckId: string) => {
