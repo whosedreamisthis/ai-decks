@@ -2,7 +2,7 @@ import React from "react";
 import { SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { LuZap } from "react-icons/lu";
-import { loginAsDemo } from "@/lib/actions";
+import { loginAsDemo } from "../lib/actions/auth";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";

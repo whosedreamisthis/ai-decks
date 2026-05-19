@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logoutDemo } from "@/lib/actions";
+import { logoutDemo } from "../../lib/actions/auth";
 import { LogIn, LogOut } from "lucide-react";
 import { UserButton, Show, SignInButton } from "@clerk/nextjs";
 
@@ -29,13 +29,11 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
         <Logo />
         {isDemo ? (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="h-9 w-9 rounded-full bg-brand-purple flex items-center justify-center  font-bold text-xs outline-none hover:opacity-90 transition-opacity text-white"
-                aria-label="Demo User Menu"
-              >
-                D
-              </button>
+            <DropdownMenuTrigger
+              className="h-9 w-9 rounded-full bg-brand-purple flex items-center justify-center font-bold text-xs outline-none hover:opacity-90 transition-opacity text-white cursor-pointer"
+              aria-label="Demo User Menu"
+            >
+              D
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel>Demo User</DropdownMenuLabel>

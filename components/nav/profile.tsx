@@ -24,7 +24,7 @@ const Profile = () => {
     <div>
       <Show when="signed-out">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger className="cursor-pointer">
             <User />
           </DropdownMenuTrigger>
           <DropdownMenuContent>

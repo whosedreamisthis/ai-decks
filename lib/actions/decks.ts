@@ -1,0 +1,32 @@
+"use server";
+import { MOCK_DECKS } from "@/lib/mock-data";
+import { revalidatePath } from "next/cache";
+
+let db = MOCK_DECKS;
+
+export const getDecks = async (filter: "active" | "archived" | "all") => {
+  // If "all", bypass the filter completely; otherwise, match the status
+  return db.filter((deck) => filter === "all" || deck.status === filter);
+};
+
+export const archiveDeck = async (deckId: string) => {
+  db = db.map((deck) =>
+    deck.id === deckId ? { ...deck, status: "archived" } : deck,
+  );
+  revalidatePath("/dashboard");
+  console.log("Archiving deck with ID:", deckId);
+};
+
+export const unarchiveDeck = async (deckId: string) => {
+  db = db.map((deck) =>
+    deck.id === deckId ? { ...deck, status: "active" } : deck,
+  );
+
+  console.log("Archiving deck with ID:", deckId);
+};
+
+export const deleteDeck = async (deckId: string) => {
+  db = db.filter((deck) => deckId !== deck.id);
+  revalidatePath("/dashboard");
+  console.log("Deleting deck with ID:", deckId);
+};

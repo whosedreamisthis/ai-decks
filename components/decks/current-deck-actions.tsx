@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -10,25 +11,43 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { archiveDeck, deleteDeck } from "@/lib/actions/decks";
 
-const CurrentDeckActions = () => {
+const CurrentDeckActions = ({ deckId }: { deckId: string }) => {
+  const handleArchiveDeck = async () => {
+    await archiveDeck(deckId);
+  };
+
+  const handleDeleteDeck = async () => {
+    await deleteDeck(deckId);
+  };
+
   return (
-    <div className="absolute top-0 right-2 ">
+    <div className="absolute top-2 right-2 z-20">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className="relative flex justify-end`">
-          <button className="text-gray-800 w-full hover:text-gray-600  transition-colors z-10 p-0 m-0 border-none focus:outline-none focus-visible:ring-0 select-none cursor-pointer">
-            <IoEllipsisHorizontal size={18} />
-          </button>
+        <DropdownMenuTrigger
+          className="flex items-center justify-center text-gray-800 hover:text-gray-600 transition-colors z-10 p-1 m-0 border-none focus:outline-none focus-visible:ring-0 select-none cursor-pointer rounded-full hover:bg-gray-100"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <IoEllipsisHorizontal size={20} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-fit" align="start">
+        <DropdownMenuContent className="w-fit" align="end">
           <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={handleArchiveDeck}
+            >
               <FiArchive />
-              Archive
+              <span>Archive</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600 cursor-pointer">
-              <FaRegTrashAlt className="h-2 w-2" />
-              Delete
+            <DropdownMenuItem
+              className="text-red-600 cursor-pointer"
+              onSelect={handleDeleteDeck}
+            >
+              <FaRegTrashAlt />
+              <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
