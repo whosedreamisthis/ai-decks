@@ -22,7 +22,12 @@ const DeckPage = async ({ params }: Props) => {
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mt-5">
         {deck.cards.map((card) => (
-          <Flashcard variant="summary" key={card.id} card={card} />
+          <Flashcard
+            variant="summary"
+            key={card.id}
+            card={card}
+            deckId={deckId}
+          />
         ))}
       </div>
     </div>

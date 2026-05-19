@@ -7,16 +7,17 @@ import FlashcardExpanded from "@/components/flashcards/flashcard-expanded";
 interface Props {
   card: Card;
   variant: "summary" | "expanded" | "study";
+  deckId: string;
 }
 
-const Flashcard = ({ card, variant }: Props) => {
+const Flashcard = ({ card, variant, deckId }: Props) => {
   switch (variant) {
     case "summary":
-      return <FlashcardSummary {...card} />;
+      return <FlashcardSummary {...card} deckId={deckId} />;
     case "expanded":
-      return <FlashcardExpanded {...card} />;
+      return <FlashcardExpanded {...card} deckId={deckId} />;
     case "study":
-      return <FlashcardStudy {...card} />;
+      return <FlashcardStudy {...card} deckId={deckId} />;
     default:
       console.error(`invalid flashcard variant: ${variant}`);
   }
