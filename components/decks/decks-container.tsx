@@ -14,15 +14,14 @@ const DecksContainer = ({ active, archived }: Props) => {
   const [showActiveDecks, setShowActiveDecks] = useState(false);
 
   return (
-    <div className="m-5">
+    <div className="mb-15 p-5 w-full flex flex-col gap-5">
       <DeckFilterToggle
         showActiveDecks={showActiveDecks}
         setShowActiveDecks={setShowActiveDecks}
         numActive={active.length}
         numArchived={archived.length}
       />
-      <div>Active Decks:{active.length}</div>
-      <div>Archived Decks:{archived.length}</div>
+
       {showActiveDecks ? (
         <DeckList decks={active} />
       ) : (

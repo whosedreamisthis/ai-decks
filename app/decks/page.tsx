@@ -7,7 +7,7 @@ const Page = async () => {
   const activeDecks = await getDecks("active");
   const archivedDecks = await getDecks("archived");
   return (
-    <div>
+    <div className="mb-5">
       <PageHeader title="Your Decks" />
       <DecksContainer active={activeDecks} archived={archivedDecks} />
     </div>

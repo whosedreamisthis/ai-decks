@@ -17,14 +17,14 @@ const DeckFilterToggle = ({
     <div className="flex gap-2 justify-center items-center">
       <Button
         variant={`${showActiveDecks ? "default" : "outline"}`}
-        className={`${showActiveDecks ? "bg-brand-blue text-white" : "border-slate-900"}`}
+        className={` w-full max-w-32 ${showActiveDecks ? "p-4  bg-brand-blue text-white" : "p-3border-slate-900"}`}
         onClick={() => setShowActiveDecks(true)}
       >
         Active: {numActive}
       </Button>
       <Button
         variant={`${!showActiveDecks ? "default" : "outline"}`}
-        className={`${!showActiveDecks ? "bg-brand-blue text-white" : "border-slate-900"}`}
+        className={`w-full max-w-32 ${!showActiveDecks ? "p-4 bg-brand-blue text-white" : "p-3 border-slate-900"}`}
         onClick={() => setShowActiveDecks(false)}
       >
         Archived: {numArchived}

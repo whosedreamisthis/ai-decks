@@ -1,7 +1,14 @@
+// @/lib/types.ts
+export interface Card {
+  id: string;
+  question: string;
+  answer: string;
+}
+
 export interface Deck {
   id: string;
   title: string;
-  cardCount: number;
-  progress: number; // Value between 0 and 100
+  progress: number;
   status: "active" | "archived";
+  cards: Card[]; // Array containing the actual card objects
 }
