@@ -12,7 +12,11 @@ const DashboardHeader = ({ isDemo = false }: GreetingProps) => {
 
   // 2. Fall back to "Friend" if the page explicitly flags isDemo,
   // or if Clerk is still checking session cookies.
-  const firstName = isDemo || !isLoaded ? "" : (user?.firstName ?? "Friend");
+  const firstName = isDemo
+    ? "Friend"
+    : !isLoaded
+      ? ""
+      : (user?.firstName ?? "Friend");
 
   return <PageHeader title={`Welcome back, ${firstName}`} />;
 };
