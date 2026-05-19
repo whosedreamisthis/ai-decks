@@ -1,6 +1,7 @@
 import React from "react";
 import { getDeck } from "@/lib/actions/decks";
-import Flashcard from "../../../components/flashcards/flashcard";
+import Flashcard from "@/components/flashcards/flashcard";
+import BackButton from "../../../components/common/back-button";
 
 interface Props {
   params: Promise<{ deckId: string }>;
@@ -16,6 +17,7 @@ const DeckPage = async ({ params }: Props) => {
 
   return (
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
+      <BackButton />
       <h1 className="text-xl sm:text-2xl font-bold">{deck.title}</h1>
       <p className="text-sm text-muted-foreground">
         {deck.cards.length} cards total
