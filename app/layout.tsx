@@ -5,6 +5,7 @@ import "./globals.css";
 import TopNav from "@/components/nav/top-nav";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cookies } from "next/headers";
+import Tabs from "@/components/nav/tabs";
 
 const sansFont = Inter({
   subsets: ["latin"],
@@ -34,8 +35,11 @@ export default async function RootLayout({
     >
       <body className="antialiased bg-brand-bg text-brand-text h-full">
         <ClerkProvider>
-          <TopNav isDemo={isDemo} />
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <TopNav isDemo={isDemo} />
+            <main className="flex-1">{children}</main>
+            <Tabs />
+          </div>
         </ClerkProvider>
       </body>
     </html>
