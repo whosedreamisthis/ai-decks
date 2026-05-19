@@ -6,7 +6,7 @@ import DeckActions from "@/components/decks/deck-actions";
 
 const DeckCard = ({ deck }: { deck: Deck }) => {
   return (
-    <div className="relative flex flex-col  shadow-md border border-gray-200 rounded-md">
+    <div className="relative flex flex-col  shadow-md border border-gray-200 rounded-md bg-white">
       <DeckActions deckId={deck.id} status={deck.status} />
       <div className="w-full flex gap-2 p-4 rounded-md justify-start items-center">
         <div className="flex justify-center items-center h-10 w-10 rounded-lg bg-brand-mint-light text-brand-mint shadow-sm">

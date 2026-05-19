@@ -13,7 +13,7 @@ const DashboardPage = async () => {
   const decks = await getDecks("active");
 
   return (
-    <div className="mb-25">
+    <div className="min-h-screen bg-slate-100 overflow-hidden pb-25">
       <DashboardHeader isDemo={isDemo} />
       <DashboardSummary
         overallProficiency="85%"

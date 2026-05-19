@@ -17,7 +17,7 @@ const DashboardSummaryCard = async ({
   fgColor,
 }: Props) => {
   return (
-    <div className="flex gap-2 items-center shadow-md border border-gray-500/20 p-1 w-full rounded-md">
+    <div className="flex gap-2 items-center shadow-md border border-gray-500/20 bg-white p-1 w-full rounded-md">
       <div>
         <div
           className={`flex justify-center items-center h-9 w-9 rounded-md  ${bgColor}`}
