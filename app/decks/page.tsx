@@ -1,11 +1,12 @@
-import React from 'react';
+import React from "react";
+import PageHeader from "@/components/common/page-header";
 
 const Page = () => {
-    return (
-        <div>
-          decks
-        </div>
-    );
+  return (
+    <div>
+      <PageHeader title="Your Decks" />
+    </div>
+  );
 };
 
 export default Page;
