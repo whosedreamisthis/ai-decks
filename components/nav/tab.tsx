@@ -5,36 +5,32 @@ import { useRouter } from "next/navigation";
 import { IconType } from "react-icons";
 
 type TabType = "home" | "decks" | "settings";
+
 interface Props {
   icon: IconType;
   iconSize: number;
   activeTab: TabType;
   tab: TabType;
-  setActiveTab: (tab: TabType) => void;
   url: string;
 }
 
-const Tab = ({
-  icon: Icon,
-  iconSize,
-  activeTab,
-  tab,
-  setActiveTab,
-  url,
-}: Props) => {
+const Tab = ({ icon: Icon, iconSize, activeTab, tab, url }: Props) => {
   const router = useRouter();
 
+  const isActive = activeTab === tab;
+
   return (
-    <div
-      className={`flex flex-col justify-center items-center text-sm ${activeTab === tab ? "text-brand-purple font-semibold" : "text-gray-500"}`}
+    <button
+      className={`flex flex-col justify-center items-center gap-1 transition-colors outline-none cursor-pointer text-xs
+        ${isActive ? "text-brand-purple font-semibold" : "text-gray-400 hover:text-gray-600"}`}
       onClick={() => {
-        setActiveTab(tab);
         void router.push(url);
       }}
     >
       <Icon size={iconSize} />
-      <p>{tab}</p>
-    </div>
+      {/* Capitalized text formatting for UI consistency */}
+      <span className="capitalize">{tab}</span>
+    </button>
   );
 };
 
