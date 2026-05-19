@@ -7,13 +7,21 @@ import { IconType } from "react-icons";
 type TabType = "home" | "decks" | "settings";
 interface Props {
   icon: IconType;
+  iconSize: number;
   activeTab: TabType;
   tab: TabType;
   setActiveTab: (tab: TabType) => void;
   url: string;
 }
 
-const Tab = ({ icon: Icon, activeTab, tab, setActiveTab, url }: Props) => {
+const Tab = ({
+  icon: Icon,
+  iconSize,
+  activeTab,
+  tab,
+  setActiveTab,
+  url,
+}: Props) => {
   const router = useRouter();
 
   return (
@@ -24,7 +32,7 @@ const Tab = ({ icon: Icon, activeTab, tab, setActiveTab, url }: Props) => {
         void router.push(url);
       }}
     >
-      <Icon />
+      <Icon size={iconSize} />
       <p>{tab}</p>
     </div>
   );

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { GoGear } from "react-icons/go";
 import { IoHomeOutline } from "react-icons/io5";
 import { CgCardClubs } from "react-icons/cg";
+import { Layers } from "lucide-react";
+
 import { router } from "next/client";
 import Tab from "@/components/nav/tab";
 
@@ -18,12 +20,14 @@ const Tabs = () => {
         <Tab
           url="/dashboard"
           icon={IoHomeOutline}
+          iconSize={20}
           tab="home"
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
         <Tab
-          icon={CgCardClubs}
+          icon={Layers}
+          iconSize={20}
           activeTab={activeTab}
           tab="decks"
           setActiveTab={setActiveTab}
@@ -32,6 +36,7 @@ const Tabs = () => {
 
         <Tab
           icon={GoGear}
+          iconSize={20}
           activeTab={activeTab}
           tab="settings"
           setActiveTab={setActiveTab}
