@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import TopNav from "@/components/nav/top-nav";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const sansFont = Inter({
   subsets: ["latin"],
@@ -26,7 +28,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-brand-bg text-brand-text h-full">
-        {children}
+        <ClerkProvider>
+          <TopNav />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );
