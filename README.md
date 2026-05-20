@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Flash-Card Sprint 🚀
 
-## Getting Started
+**AI Flash-Card Sprint** is a modern, high-performance web application designed to help you master complex topics through AI-powered study sessions. Leverage the power of Generative AI to create custom flashcard decks in seconds and track your learning progress with a sleek, intuitive dashboard.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+-   **🤖 AI Deck Generation**: Instantly generate comprehensive flashcard decks from any topic or prompt using Google's Gemini Pro API.
+-   **⏱️ Study Sessions**: Engage in focused study sessions with real-time feedback and progress tracking.
+-   **📊 Learning Dashboard**: Monitor your overall proficiency, total cards mastered, and active study sessions at a glance.
+-   **🌓 Dark Mode Support**: Fully responsive UI with seamless theme switching (System, Light, and Dark).
+-   **🏗️ Demo Mode**: Explore the app's full capabilities instantly without needing to sign up.
+-   **🔐 Secure Authentication**: Integrated with Clerk for reliable and secure user management.
+
+## 🛠️ Tech Stack
+
+-   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+-   **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+-   **AI Engine**: [Google Generative AI (Gemini Pro)](https://ai.google.dev/)
+-   **Authentication**: [Clerk](https://clerk.com/)
+-   **State Management**: React Hooks & Server Actions
+-   **Icons**: [Lucide React](https://lucide.dev/)
+-   **Database**: Mock Database (State-persistent during development)
+-   **Components**: [Radix UI](https://www.radix-ui.com/) & [Shadcn UI](https://ui.shadcn.com/)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+-   Node.js 20+
+-   An API key for Google Gemini (optional for manual study, required for AI generation)
+-   Clerk API keys for authentication
+
+### Installation
+
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/your-username/ai-decks.git
+    cd ai-decks
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    Create a `.env.local` file in the root directory and add your keys:
+    ```env
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pub_key
+    CLERK_SECRET_KEY=your_clerk_secret_key
+    GOOGLE_GENAI_API_KEY=your_google_ai_key
+    ```
+
+4.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   `app/`: Next.js App Router pages and layouts.
+-   `components/`: Reusable React components (Study engine, Deck cards, UI elements).
+-   `lib/`: Core logic, including server actions (`actions/`), database schema (`db.ts`), and mock data (`mock-data.ts`).
+-   `public/`: Static assets.
 
-## Learn More
+## 📝 License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Distributed under the MIT License. See `LICENSE` for more information (if applicable).
