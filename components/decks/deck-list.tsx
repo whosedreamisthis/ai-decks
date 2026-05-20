@@ -1,3 +1,5 @@
+// @/components/decks/deck-list.tsx
+import React from "react";
 import { Deck } from "@/lib/types";
 import DeckCard from "@/components/decks/deck-card";
 
@@ -7,6 +9,7 @@ interface Props {
 
 const DeckList = ({ decks }: Props) => {
   const safeDecks = Array.isArray(decks) ? decks : [];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 my-5">
       {safeDecks.map((deck) => (

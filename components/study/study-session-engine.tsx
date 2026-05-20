@@ -1,3 +1,4 @@
+// @/components/study/study-session-engine.tsx
 "use client";
 
 import { Deck, ResultsSummaryData } from "@/lib/types";
@@ -36,7 +37,7 @@ export default function StudySessionEngine({ deck }: Props) {
 
     setResultsSummary({ totalAnswered, correctCount, accuracy });
     setIsFinished(true);
-    handleClearSession(); // Clear browser storage upon finalization
+    handleClearSession();
 
     try {
       await finalizeStudySessionAction({
@@ -51,7 +52,7 @@ export default function StudySessionEngine({ deck }: Props) {
     }
   };
 
-  // Load saved state on mount
+  // Load saved state from localStorage on mount
   useEffect(() => {
     const savedData = localStorage.getItem(`study_session_${deckId}`);
     if (savedData) {
@@ -66,21 +67,32 @@ export default function StudySessionEngine({ deck }: Props) {
     setIsLoaded(true);
   }, [deckId]);
 
-  // Save state to localStorage automatically
+  // Automatically sync to localStorage on modifications
   useEffect(() => {
     if (!isLoaded || isFinished) return;
+
+    // Calculate live progress percentage to save directly to disk
+    const progressPercentage = Math.round((currentIndex / cards.length) * 100);
 
     const sessionData = {
       index: currentIndex,
       progress: sessionProgress,
+      percentage: progressPercentage,
     };
     localStorage.setItem(
       `study_session_${deckId}`,
       JSON.stringify(sessionData),
     );
-  }, [currentIndex, sessionProgress, deckId, isLoaded, isFinished]);
+    console.log("Session data saved to localStorage", sessionData);
+  }, [
+    currentIndex,
+    sessionProgress,
+    deckId,
+    isLoaded,
+    isFinished,
+    cards.length,
+  ]);
 
-  // Handle rating selections
   const handleRateCard = (status: "correct" | "incorrect") => {
     const updatedProgress = {
       ...sessionProgress,
@@ -92,7 +104,6 @@ export default function StudySessionEngine({ deck }: Props) {
     if (currentIndex < cards.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      // Pass the updated object directly to avoid waiting for the async state batch cycle
       handleFinishSession(updatedProgress);
     }
   };
@@ -107,14 +118,14 @@ export default function StudySessionEngine({ deck }: Props) {
     localStorage.removeItem(`study_session_${deckId}`);
   };
 
-  if (!isLoaded)
+  if (!isLoaded) {
     return (
       <div className="text-center p-10 text-muted-foreground">
         Loading your session...
       </div>
     );
+  }
 
-  // Render final results view
   if (isFinished && resultsSummary) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-md border border-gray-100 max-w-md mx-auto mt-10">

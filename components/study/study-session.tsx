@@ -28,7 +28,7 @@ const StudySession = ({
 
   // Dynamic progress calculation based on cards reviewed
   const progressPercentage = Math.round(
-    ((currentIndex + 1) / deck.cards.length) * 100,
+    (currentIndex / deck.cards.length) * 100,
   );
 
   return (
@@ -42,7 +42,7 @@ const StudySession = ({
           disabled={currentIndex === 0}
         >
           <ChevronLeft size={20} />
-          <span>Back</span>
+          <span>Previous Card</span>
         </Button>
 
         {/* Display Current Flashcard Context */}
