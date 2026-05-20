@@ -38,10 +38,19 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   return (
     <div className="sticky top-0 bg-white z-50">
       <div className=" bg-white flex  items-center justify-between px-5 py-2">
-        <Link href="/dashboard">
-          <Logo />
-        </Link>
-        <Button onClick={handleReset}>Reset</Button>
+        <div className="flex items-center justify-start gap-4">
+          <Link href="/dashboard">
+            <Logo />
+          </Link>
+          {isDemo && (
+            <Button
+              onClick={handleReset}
+              className="bg-brand-blue hover:bg-brand-blue/80 text-white font-bold py-2 px-4 rounded-md cursor-pointer"
+            >
+              Reset Demo
+            </Button>
+          )}
+        </div>
         <div className="flex items-center">
           {isDemo ? <DemoProfile /> : <UserProfile />}
         </div>
