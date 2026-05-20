@@ -7,10 +7,12 @@ export interface Card {
 
 export interface Deck {
   id: string;
+  userId?: string;
   title: string;
   progress: number;
   status: "active" | "archived";
   cards: Card[]; // Array containing the actual card objects
+  createdAt?: Date;
 }
 
 export interface ResultsSummaryData {
