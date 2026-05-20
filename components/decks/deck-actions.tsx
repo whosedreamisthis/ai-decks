@@ -47,7 +47,10 @@ const DeckActions = ({
             e.stopPropagation();
           }}
         >
-          <IoEllipsisHorizontal size={20} className="absolute -top-2 right-0" />
+          <IoEllipsisHorizontal
+            size={20}
+            className="absolute -top-2 right-0 dark:text-white"
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-fit" align="end">
           <DropdownMenuGroup>
