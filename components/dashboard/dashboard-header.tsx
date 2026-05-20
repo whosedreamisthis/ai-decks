@@ -22,10 +22,10 @@ const DashboardHeader = ({ isDemo = false }: GreetingProps) => {
 
   return (
     <div className="flex items-center justify-between">
-      <PageHeader title={`Welcome back, ${firstName}`} />;
+      <PageHeader title={`Welcome back, ${firstName}`} />
       <Link
         href="/decks"
-        className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100  group mr-5"
+        className="flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100  group mr-5 shrink-0  whitespace-nowrap"
       >
         <span>View all decks</span>
         <MoveRight
