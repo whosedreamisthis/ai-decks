@@ -4,6 +4,8 @@ import { Deck, ResultsSummaryData } from "@/lib/types";
 import React, { useState, useEffect } from "react";
 import StudySession from "@/components/study/study-session";
 import { finalizeStudySessionAction } from "@/lib/actions/session";
+import { Trophy } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   deck: Deck;
@@ -11,7 +13,7 @@ interface Props {
 
 export default function StudySessionEngine({ deck }: Props) {
   const { id: deckId, cards } = deck;
-  // 1. Initialize State. If local storage has a saved session for this deck, load it!
+
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [sessionProgress, setSessionProgress] = useState<
     Record<string, "correct" | "incorrect">
@@ -21,36 +23,31 @@ export default function StudySessionEngine({ deck }: Props) {
   const [resultsSummary, setResultsSummary] =
     useState<ResultsSummaryData | null>(null);
 
-  const handleFinishSession = async () => {
-    // 1. Gather all unique attempts from your progress dictionary
-    const attempts = Object.entries(sessionProgress); // [ [cardId, "correct"], [cardId, "incorrect"] ]
-
+  const handleFinishSession = async (
+    finalProgress: Record<string, "correct" | "incorrect">,
+  ) => {
+    const attempts = Object.entries(finalProgress);
     const totalAnswered = attempts.length;
     const correctCount = attempts.filter(
       ([_, status]) => status === "correct",
     ).length;
-
-    // 2. Prevent division by zero if a deck has no items
     const accuracy =
       totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
 
-    // 3. Set local state to instantly switch the screen to a "Results Summary"
     setResultsSummary({ totalAnswered, correctCount, accuracy });
     setIsFinished(true);
+    handleClearSession(); // Clear browser storage upon finalization
 
-    // 4. Fire and forget the payload to your backend database database
     try {
-      // This server action saves the permanent score history AND deletes the temporary active session row
       await finalizeStudySessionAction({
         deckId,
         totalAnswered,
         correctCount,
         accuracy,
-        history: sessionProgress,
+        history: finalProgress,
       });
     } catch (error) {
       console.error("Failed to save final session results to server:", error);
-      // Optional: Add a toast notification letting the user know their progress couldn't sync
     }
   };
 
@@ -69,9 +66,9 @@ export default function StudySessionEngine({ deck }: Props) {
     setIsLoaded(true);
   }, [deckId]);
 
-  // 2. Save state automatically to localStorage whenever the index or progress modifications happen
+  // Save state to localStorage automatically
   useEffect(() => {
-    if (!isLoaded) return; // Prevent overwriting with initial empty states
+    if (!isLoaded || isFinished) return;
 
     const sessionData = {
       index: currentIndex,
@@ -81,32 +78,97 @@ export default function StudySessionEngine({ deck }: Props) {
       `study_session_${deckId}`,
       JSON.stringify(sessionData),
     );
-  }, [currentIndex, sessionProgress, deckId, isLoaded]);
+  }, [currentIndex, sessionProgress, deckId, isLoaded, isFinished]);
 
-  // Handle a card rating selection
+  // Handle rating selections
   const handleRateCard = (status: "correct" | "incorrect") => {
-    setSessionProgress((prev) => ({
-      ...prev,
+    const updatedProgress = {
+      ...sessionProgress,
       [cards[currentIndex].id]: status,
-    }));
+    };
+
+    setSessionProgress(updatedProgress);
 
     if (currentIndex < cards.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      handleFinishSession();
+      // Pass the updated object directly to avoid waiting for the async state batch cycle
+      handleFinishSession(updatedProgress);
+    }
+  };
+
+  const handlePreviousCard = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
     }
   };
 
   const handleClearSession = () => {
-    // Clear out browser storage once the session completes fully
     localStorage.removeItem(`study_session_${deckId}`);
   };
 
-  if (!isLoaded) return <div>Loading your session...</div>;
+  if (!isLoaded)
+    return (
+      <div className="text-center p-10 text-muted-foreground">
+        Loading your session...
+      </div>
+    );
+
+  // Render final results view
+  if (isFinished && resultsSummary) {
+    return (
+      <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-md border border-gray-100 max-w-md mx-auto mt-10">
+        <div className="w-16 h-16 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center mb-4">
+          <Trophy size={32} />
+        </div>
+        <h2 className="text-2xl font-bold text-slate-800 mb-1">
+          Deck Complete!
+        </h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Great job finishing your study block.
+        </p>
+        <div className="grid grid-cols-3 gap-4 w-full mb-8 bg-slate-50 p-4 rounded-xl">
+          <div>
+            <span className="block text-2xl font-bold text-slate-700">
+              {resultsSummary.totalAnswered}
+            </span>
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Reviewed
+            </span>
+          </div>
+          <div>
+            <span className="block text-2xl font-bold text-emerald-600">
+              {resultsSummary.correctCount}
+            </span>
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Correct
+            </span>
+          </div>
+          <div>
+            <span className="block text-2xl font-bold text-brand-purple">
+              {resultsSummary.accuracy}%
+            </span>
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Accuracy
+            </span>
+          </div>
+        </div>
+        <Link
+          href="/dashboard"
+          className="w-full py-3 bg-brand-purple text-white font-semibold rounded-xl block text-center"
+        >
+          Back to Dashboard
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <StudySession deck={deck} />
-    </div>
+    <StudySession
+      deck={deck}
+      currentIndex={currentIndex}
+      handleRateCard={handleRateCard}
+      handlePreviousCard={handlePreviousCard}
+    />
   );
 }
