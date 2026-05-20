@@ -49,29 +49,14 @@ export default function FlashcardStudy({ question, answer }: Props) {
             </div>
           </div>
 
-          {/* BACK SIDE (Answer) */}
           <div className="absolute inset-0 bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between backface-hidden transform-[rotateY(180deg)]">
             <div className=" my-auto flex-1 overflow-y-auto pr-1 flex flex-col justify-start text-center">
-              {/* 2. THE MAGIC CENTERING WRAPPER:
-       - 'flex-1' expands to fill all remaining vertical space.
-       - 'flex flex-col justify-center' centers your short text inside this space.
-       - 'min-h-0' is a crucial CSS layout fix that allows this inner box
-         to collapse properly when the text overflows, passing control to the scroll container.
-  */}
-
-              {/* 3. THE SCROLL CONTAINER: Only this specific box will scroll when text is long.
-         - 'flex-1' makes it take up all remaining card space.
-         - 'overflow-y-auto' keeps the scrollbar isolated right here.
-         - 'justify-start' ensures long text scrolls from the very top. */}
               <div className="flex-1 overflow-y-auto pr-1 flex flex-col justify-start">
-                {/* 4. THE SMART CENTERING WRAPPER:
-           - 'my-auto' handles the magic: centers short text perfectly,
-             but collapses to 0 when the text is long to allow normal top-down scrolling. */}
                 <div className="my-auto py-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-brand-purple mb-3 block shrink-0">
                     Answer
                   </span>
-                  <p className="text-base sm:text-lg text-slate-600 break-words">
+                  <p className="text-base sm:text-lg text-slate-600 wrap-break-word">
                     {answer}
                   </p>
                 </div>
