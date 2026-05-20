@@ -46,7 +46,7 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
   }
 
   return (
-    <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md">
+    <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md md:w-[50%] w-auto">
       <div className="flex items-center justify-between">
         <p className="text-xl font-bold">Current Decks</p>
         <Link href="/decks" className="flex gap-2">

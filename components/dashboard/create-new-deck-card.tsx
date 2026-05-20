@@ -8,7 +8,7 @@ const CreateNewDeckCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
-      <div className="m-5 flex gap-3 items-center justify-center p-5 bg-brand-mint-light border-brand-mint border rounded-md">
+      <div className="m-5 flex gap-3 items-center justify-center p-5 bg-brand-mint-light border-brand-mint border rounded-md md:w-[50%] w-auto">
         <CreateDeckGraphic />
         <div className="flex flex-col gap-2 flex-1">
           <div>

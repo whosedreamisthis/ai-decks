@@ -54,8 +54,10 @@ const DashboardPage = async () => {
         totalCardCount={totalCardCount}
         activeDecksCount={activeDecksCount}
       />
-      <CreateNewDeckCard />
-      <CurrentDecks decks={activeDecks} />
+      <div className="flex flex-col md:flex-row">
+        <CreateNewDeckCard />
+        <CurrentDecks decks={activeDecks} />
+      </div>
     </div>
   );
 };
