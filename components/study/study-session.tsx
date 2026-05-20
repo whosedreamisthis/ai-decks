@@ -7,6 +7,7 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import ProgressBar from "@/components/common/progress-bar";
+import Link from "next/link";
 
 interface StudySessionProps {
   deck: Deck;
@@ -35,15 +36,24 @@ const StudySession = ({
     <div>
       <div className="flex flex-col gap-3 m-5 justify-center">
         {/* Navigation Back Action */}
-        <Button
-          variant="ghost"
-          className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
-          onClick={handlePreviousCard}
-          disabled={currentIndex === 0}
-        >
-          <ChevronLeft size={20} />
-          <span>Previous Card</span>
-        </Button>
+        <div className="flex items-center justify-start">
+          <Button
+            variant="ghost"
+            className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
+            onClick={handlePreviousCard}
+            disabled={currentIndex === 0}
+          >
+            <ChevronLeft size={20} />
+            <span>Previous Card</span>
+          </Button>
+          <Link
+            href={`/decks/${deck.id}`}
+            className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
+          >
+            <ChevronLeft size={20} />
+            <span>Back To Deck</span>
+          </Link>
+        </div>
         <h1 className="text-center text-xl font-bold">{deck.title}</h1>
 
         {/* Display Current Flashcard Context */}
