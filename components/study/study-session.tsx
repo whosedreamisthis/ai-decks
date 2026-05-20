@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import ProgressBar from "@/components/common/progress-bar";
 import Link from "next/link";
+import BreadCrumbs from "@/components/common/bread-crumbs";
 
 interface StudySessionProps {
   deck: Deck;
@@ -36,37 +37,9 @@ const StudySession = ({
   return (
     <div>
       <div className="flex flex-col gap-3 m-5 justify-center">
-        {/* NEW: GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
-        <div className="w-full max-w-xl mx-auto mb-4 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm">
-          {/* Dynamic Breadcrumb Paths */}
-          <div className="flex items-center gap-1.5 text-muted-foreground font-medium">
-            <Link
-              href="/dashboard"
-              className="hover:text-slate-900 transition-colors"
-            >
-              Home
-            </Link>
-            <ChevronDivider size={14} className="text-slate-300" />
-
-            {/* Direct, clean bridge back to the full catalog shelf */}
-            <Link
-              href="/decks"
-              className="hover:text-slate-900 transition-colors text-brand-purple font-semibold"
-            >
-              Decks
-            </Link>
-          </div>
-
-          {/* Clean explicit escape action */}
-          <Link
-            href={`/decks/${deck.id}`}
-            className="text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-red-500 transition-colors"
-          >
-            Exit Session
-          </Link>
+        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm w-full">
+          <BreadCrumbs deckUrl={`/decks/${deck.id}`} exitLabel="Exit Session" />
         </div>
-
-        {/* Action Controls Panel: Relocated "Previous Card" trigger above the title layout */}
         <div className="w-full max-w-xl mx-auto flex items-center justify-start -mt-2">
           <Button
             variant="ghost"

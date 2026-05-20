@@ -2,12 +2,9 @@ import React from "react";
 import BackButton from "@/components/common/back-button";
 import { getDeckById } from "@/lib/actions/decks";
 import FlashcardExpanded from "@/components/flashcards/flashcard-expanded";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronRight as ChevronDivider,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import BreadCrumbs from "@/components/common/bread-crumbs";
 
 interface Props {
   params: Promise<{ deckId: string; cardId: string }>;
@@ -45,32 +42,7 @@ const CardPage = async ({ params }: Props) => {
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
       {/* GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
       <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm">
-        {/* Dynamic Breadcrumb Path Links */}
-        <div className="flex items-center gap-1.5 text-muted-foreground font-medium">
-          <Link
-            href="/dashboard"
-            className="hover:text-slate-900 transition-colors"
-          >
-            Home
-          </Link>
-          <ChevronDivider size={14} className="text-slate-300" />
-
-          {/* FIXED: This gives them a direct, unconditional escape hatch to the /decks shelf! */}
-          <Link
-            href="/decks"
-            className="hover:text-slate-900 transition-colors text-brand-purple font-semibold"
-          >
-            Decks
-          </Link>
-        </div>
-
-        {/* Clean, unambiguous exit trigger */}
-        <Link
-          href={deckUrl}
-          className="text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-red-500 transition-colors"
-        >
-          Exit
-        </Link>
+        <BreadCrumbs deckUrl={deckUrl} exitLabel="Exit" />
       </div>
       <h1 className="text-center text-xl font-bold my-2">{deck.title}</h1>
 
