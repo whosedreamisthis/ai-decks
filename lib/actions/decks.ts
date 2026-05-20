@@ -107,6 +107,23 @@ export const unarchiveDeck = async (deckId: string) => {
 
 export const deleteDeck = async (deckId: string) => {
   const db = getDb();
+  const { userId } = await auth();
+
+  // 1. Remove the deck itself
   setDecks(db.decks.filter((deck) => deckId !== deck.id));
+
+  // 2. Clean up associated progress and active sessions
+  if (userId) {
+    db.deckProgress = db.deckProgress.filter(
+      (p) => !(p.deckId === deckId && p.userId === userId),
+    );
+    db.activeDeckSession = db.activeDeckSession.filter(
+      (s) => !(s.deckId === deckId && s.userId === userId),
+    );
+    // Note: We might want to keep studyHistoryLog for overall user stats,
+    // or we could delete it too if we want a full wipe.
+    // For now, keeping history to preserve "Overall Proficiency" stats.
+  }
+
   updateTag("decks");
 };
