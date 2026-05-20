@@ -17,7 +17,10 @@ const DeckPage = async ({ params }: Props) => {
 
   return (
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
-      <BackButton />
+      <div className="flex justify-between items-center">
+        <BackButton />
+      </div>
+
       <h1 className="text-xl sm:text-2xl font-bold">{deck.title}</h1>
       <p className="text-sm text-muted-foreground">
         {deck.cards.length} cards total

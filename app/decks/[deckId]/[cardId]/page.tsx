@@ -43,7 +43,7 @@ const CardPage = async ({ params }: Props) => {
       <div className="flex justify-center">
         <div className="flex items-center justify-between  mt-6  w-full max-w-md">
           <Link
-            href={`/decks/${deckId}/cards/${prevCardId}`}
+            href={`/decks/${deckId}/${prevCardId}`}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-slate-50 transition-colors text-sm"
             replace
           >
@@ -56,7 +56,7 @@ const CardPage = async ({ params }: Props) => {
           </span>
 
           <Link
-            href={`/decks/${deckId}/cards/${nextCardId}`}
+            href={`/decks/${deckId}/${nextCardId}`}
             className="flex items-center gap-2 px-4 py-2 bg-brand-mint text-white rounded-md shadow-sm hover:bg-brand-blue/90 transition-colors text-sm"
             replace
           >

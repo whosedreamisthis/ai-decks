@@ -12,7 +12,7 @@ const Flashcard = ({ id, question, answer, deckId }: Props) => {
   return (
     <div className="relative gap-3 p-5 bg-white shadow-md items-center rounded-md">
       <Link
-        href={`/decks/${deckId}/cards/${id}`}
+        href={`/decks/${deckId}/${id}`}
         className="absolute inset-0 z-0 rounded-md cursor-pointer"
         aria-label={`View ${question} card`}
       />
