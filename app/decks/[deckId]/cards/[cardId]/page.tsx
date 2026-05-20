@@ -35,13 +35,13 @@ const CardPage = async ({ params }: Props) => {
   const nextCardId = deck.cards[nextIndex].id;
 
   return (
-    <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
+    <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25 ">
       <BackButton />
       <div className="flex justify-center">
         <FlashcardExpanded deckId={deckId} {...currentCard} />
       </div>
       <div className="flex justify-center">
-        <div className="flex items-center justify-between w-full max-w-xl mt-6">
+        <div className="flex items-center justify-between  mt-6  w-full max-w-md">
           <Link
             href={`/decks/${deckId}/cards/${prevCardId}`}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-slate-50 transition-colors text-sm"

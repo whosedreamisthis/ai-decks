@@ -1,4 +1,6 @@
 "use server";
+
+import { cache } from "react";
 import { MOCK_DECKS } from "@/lib/mock-data";
 import { revalidatePath } from "next/cache";
 
@@ -22,11 +24,11 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   return db.filter((deck) => filter === "all" || deck.status === filter);
 };
 
-export const getDeck = async (deckId: string) => {
+export const getDeck = cache(async (deckId: string) => {
   const db = getDb();
   // If "all", bypass the filter completely; otherwise, match the status
   return db.find((deck) => deckId === deck.id);
-};
+});
 
 export const getCard = async (cardId: string, deckId: string) => {
   const db = getDb();
