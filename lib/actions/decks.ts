@@ -13,25 +13,25 @@ if (!global._db) {
   global._db = [...MOCK_DECKS];
 }
 
-const getDb = () => global._db!;
+export const getDb = async () => global._db!;
 const setDb = (newDb: typeof MOCK_DECKS) => {
   global._db = newDb;
 };
 
 export const getDecks = async (filter: "active" | "archived" | "all") => {
-  const db = getDb();
+  const db = await getDb();
   // If "all", bypass the filter completely; otherwise, match the status
   return db.filter((deck) => filter === "all" || deck.status === filter);
 };
 
 export const getDeckById = cache(async (deckId: string) => {
-  const db = getDb();
+  const db = await getDb();
   // If "all", bypass the filter completely; otherwise, match the status
   return db.find((deck) => deckId === deck.id);
 });
 
 export const getCard = async (cardId: string, deckId: string) => {
-  const db = getDb();
+  const db = await getDb();
   const deck = db.find((deck) => deckId === deck.id);
   if (!deck) return null;
   // If "all", bypass the filter completely; otherwise, match the status
@@ -46,7 +46,7 @@ export const resetDecks = async () => {
 };
 
 export const archiveDeck = async (deckId: string) => {
-  const db = getDb();
+  const db = await getDb();
   setDb(
     db.map((deck) =>
       deck.id === deckId ? { ...deck, status: "archived" } : deck,
@@ -58,7 +58,7 @@ export const archiveDeck = async (deckId: string) => {
 };
 
 export const unarchiveDeck = async (deckId: string) => {
-  const db = getDb();
+  const db = await getDb();
   setDb(
     db.map((deck) =>
       deck.id === deckId ? { ...deck, status: "active" } : deck,
@@ -72,7 +72,7 @@ export const unarchiveDeck = async (deckId: string) => {
 };
 
 export const deleteDeck = async (deckId: string) => {
-  const db = getDb();
+  const db = await getDb();
   setDb(db.filter((deck) => deckId !== deck.id));
   revalidatePath("/dashboard");
   revalidatePath("/decks");

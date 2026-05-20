@@ -1,7 +1,6 @@
 import React from "react";
-import FlashcardStudy from "@/components/flashcards/flashcard-study";
 import { getDeckById } from "@/lib/actions/decks";
-import StudySession from "@/components/study/study-session";
+import StudySessionEngine from "@/components/study/study-session-engine";
 
 const StudyPage = async ({
   params,
@@ -15,7 +14,7 @@ const StudyPage = async ({
     return <div>No cards in deck</div>;
   return (
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden pb-25">
-      <StudySession deck={deck} />
+      <StudySessionEngine deck={deck} />
     </div>
   );
 };

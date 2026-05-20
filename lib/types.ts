@@ -12,3 +12,9 @@ export interface Deck {
   status: "active" | "archived";
   cards: Card[]; // Array containing the actual card objects
 }
+
+export interface ResultsSummaryData {
+  totalAnswered: number;
+  correctCount: number;
+  accuracy: number;
+}
