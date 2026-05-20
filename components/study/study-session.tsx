@@ -49,6 +49,7 @@ const StudySession = ({
           <Link
             href={`/decks/${deck.id}`}
             className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
+            replace
           >
             <ChevronLeft size={20} />
             <span>Back To Deck</span>

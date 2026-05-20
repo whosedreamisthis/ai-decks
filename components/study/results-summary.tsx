@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { ResultsSummaryData } from "@/lib/types";
+import Link from "next/link";
 
 interface Props {
   resultsSummary: ResultsSummaryData | null;
@@ -51,12 +52,22 @@ const ResultsSummary = ({
         >
           Study Again
         </button>
-        <Link
-          href={`/decks/${deckId}`}
-          className="w-full py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors block text-center"
-        >
-          Back to Deck Details
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/dashboard"
+            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors block text-center"
+            replace
+          >
+            Dashboard
+          </Link>
+          <Link
+            href={`/decks/${deckId}`}
+            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors block text-center"
+            replace
+          >
+            Deck Details
+          </Link>
+        </div>
       </div>
     </div>
   );

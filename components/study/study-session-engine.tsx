@@ -5,8 +5,7 @@ import { Deck, ResultsSummaryData } from "@/lib/types";
 import React, { useState, useEffect } from "react";
 import StudySession from "@/components/study/study-session";
 import { finalizeStudySessionAction } from "@/lib/actions/session";
-import { Trophy } from "lucide-react";
-import Link from "next/link";
+import ResultsSummary from "@/components/study/results-summary";
 
 interface Props {
   deck: Deck;
@@ -140,42 +139,16 @@ export default function StudySessionEngine({ deck }: Props) {
 
   if (isFinished && resultsSummary) {
     return (
-      <div className="min-h-100 flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-md border border-gray-100 max-w-md mx-auto mt-10">
-        <div className="w-16 h-16 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center mb-4">
-          <Trophy size={32} />
-        </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-1">
-          Deck Complete!
-        </h2>
-        <p className="text-sm text-muted-foreground mb-6">
-          Great job finishing your study block.
-        </p>
-        <div className="flex items-center justify-center gap-10 mb-10">
-          <div>
-            <span className="block text-2xl font-bold text-emerald-600">
-              {resultsSummary.correctCount}
-              {" / "} {cards.length}
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Correct
-            </span>
-          </div>
-          <div>
-            <span className="block text-2xl font-bold text-brand-purple">
-              {resultsSummary.accuracy}%
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Accuracy
-            </span>
-          </div>
-        </div>
-        <Link
-          href="/dashboard"
-          className="w-full py-3 bg-brand-purple text-white font-semibold rounded-xl block text-center"
-        >
-          Back to Dashboard
-        </Link>
-      </div>
+      <ResultsSummary
+        resultsSummary={resultsSummary}
+        handleResetAndRestartStudy={() => {
+          setCurrentIndex(0);
+          setSessionProgress({});
+          setIsFinished(false);
+          setResultsSummary(null);
+        }}
+        deckId={deckId}
+      />
     );
   }
 

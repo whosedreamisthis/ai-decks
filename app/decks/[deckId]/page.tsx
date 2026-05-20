@@ -34,6 +34,7 @@ const DeckPage = async ({ params }: Props) => {
         <Link
           href={`/decks/${deckId}/study`}
           className="flex items-center justify-center gap-3 w-full py-4 px-6 bg-brand-purple text-white font-semibold rounded-xl shadow-md hover:bg-brand-purple/90 active:scale-[0.98] transition-all text-base group"
+          replace
         >
           <Play
             size={20}
