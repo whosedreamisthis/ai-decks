@@ -26,14 +26,6 @@ const ResultsSummary = ({
       {/* Metrics Row */}
       <div className="grid grid-cols-3 gap-4 w-full mb-8 bg-slate-50 p-4 rounded-xl">
         <div>
-          <span className="block text-2xl font-bold text-slate-700">
-            {resultsSummary?.totalAnswered}
-          </span>
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            Reviewed
-          </span>
-        </div>
-        <div>
           <span className="block text-2xl font-bold text-emerald-600">
             {resultsSummary?.correctCount}
           </span>

@@ -150,18 +150,11 @@ export default function StudySessionEngine({ deck }: Props) {
         <p className="text-sm text-muted-foreground mb-6">
           Great job finishing your study block.
         </p>
-        <div className="grid grid-cols-3 gap-4 w-full mb-8 bg-slate-50 p-4 rounded-xl">
-          <div>
-            <span className="block text-2xl font-bold text-slate-700">
-              {resultsSummary.totalAnswered}
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Reviewed
-            </span>
-          </div>
+        <div className="flex items-center justify-center gap-10 mb-10">
           <div>
             <span className="block text-2xl font-bold text-emerald-600">
               {resultsSummary.correctCount}
+              {" / "} {cards.length}
             </span>
             <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
               Correct
