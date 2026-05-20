@@ -17,16 +17,23 @@ const CardPage = async ({ params }: Props) => {
   const deckUrl = `/decks/${deckId}`;
 
   if (!deck)
-    return <div className="p-5 text-center font-bold">Deck not found</div>;
+    return (
+      <div className="p-5 text-center font-bold dark:text-slate-200">
+        Deck not found
+      </div>
+    );
 
   const currentCardIndex = deck.cards.findIndex((c) => c.id === cardId);
   const currentCard = deck.cards[currentCardIndex];
 
   if (!currentCard)
     return (
-      <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
+      /* FIXED: Replaced legacy background tint class with adaptive theme utilities */
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden p-5 pb-25">
         <BackButton fallbackUrl={deckUrl} />
-        <div className="text-center text-2xl font-bold">Card not found</div>
+        <div className="text-center text-2xl font-bold text-slate-900 dark:text-slate-100">
+          Card not found
+        </div>
       </div>
     );
 
@@ -41,10 +48,15 @@ const CardPage = async ({ params }: Props) => {
   return (
     <div className="min-h-screen overflow-hidden p-5 pb-25">
       {/* GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
-      <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm">
+      {/* FIXED: Added dark:bg-slate-900/60 and your crisp dark:border-slate-700 illuminated layout border */}
+      <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm transition-colors">
         <BreadCrumbs deckUrl={deckUrl} exitLabel="Exit" />
       </div>
-      <h1 className="text-center text-xl font-bold my-2">{deck.title}</h1>
+
+      {/* FIXED: Handled title heading contrast using text-slate-900 dark:text-slate-100 */}
+      <h1 className="text-center text-xl font-bold my-2 text-slate-900 dark:text-slate-100">
+        {deck.title}
+      </h1>
 
       {/* Main Flashcard Body */}
       <div className="flex justify-center">
@@ -54,22 +66,25 @@ const CardPage = async ({ params }: Props) => {
       {/* Card Carousel Controls */}
       <div className="flex justify-center">
         <div className="flex items-center justify-between mt-6 w-full max-w-md">
+          {/* FIXED: Configured the "Previous" link container card to swap to bg-slate-900 with your crisp dark:border-slate-700 outline */}
           <Link
             href={`/decks/${deckId}/${prevCardId}`}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-slate-50 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-md shadow-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm"
             replace
           >
             <ChevronLeft size={16} />
             <span>Previous</span>
           </Link>
 
-          <span className="text-sm text-slate-500 font-medium">
+          {/* FIXED: Adjusted pagination tracking string to text-slate-500 dark:text-slate-400 */}
+          <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
             {currentCardIndex + 1} of {deck.cards.length}
           </span>
 
+          {/* FIXED: Replaced unmapped hover:bg-brand-blue/90 with hover:bg-brand-mint/90 or dark controls to avoid confusing color flashing */}
           <Link
             href={`/decks/${deckId}/${nextCardId}`}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-mint text-white rounded-md shadow-sm hover:bg-brand-blue/90 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-brand-mint hover:bg-brand-mint/90 text-white rounded-md shadow-sm transition-colors text-sm font-semibold"
             replace
           >
             <span>Next</span>

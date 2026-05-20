@@ -1,4 +1,3 @@
-// @/components/decks/deck-card.tsx
 import React from "react";
 import { Deck } from "@/lib/types";
 import { FiArchive } from "react-icons/fi";
@@ -13,7 +12,8 @@ interface DeckCardProps {
 
 const DeckCard = ({ deck }: DeckCardProps) => {
   return (
-    <div className="relative flex flex-col shadow-md border border-gray-200 rounded-md bg-white hover:border-slate-300 transition-all">
+    /* FIXED: Changed dark:border-slate-800 to dark:border-slate-700 for a visible light border outline in dark mode */
+    <div className="relative flex flex-col shadow-md bg-white dark:bg-slate-700/60 border border-gray-200 dark:border-slate-700 rounded-md hover:border-slate-300 dark:hover:border-slate-500 transition-all">
       <div className="relative z-10">
         <DeckActions deckId={deck.id} status={deck.status} />
       </div>
@@ -25,7 +25,7 @@ const DeckCard = ({ deck }: DeckCardProps) => {
       />
 
       <div className="w-full flex gap-2 p-4 rounded-md justify-start items-center">
-        <div className="flex justify-center items-center h-10 w-10 rounded-lg bg-brand-mint-light text-brand-mint shadow-sm shrink-0">
+        <div className="flex justify-center items-center h-10 w-10 rounded-lg bg-brand-mint-light dark:bg-emerald-950/40 text-brand-mint shadow-sm shrink-0">
           {deck.status === "active" ? (
             <UserCheck size={20} />
           ) : (
@@ -34,15 +34,14 @@ const DeckCard = ({ deck }: DeckCardProps) => {
         </div>
 
         <div className="flex flex-col flex-1 min-w-0">
-          <p className="text-md font-bold text-slate-800 truncate">
+          <p className="text-md font-bold text-slate-900 dark:text-slate-100 truncate">
             {deck.title}
           </p>
           <div className="flex items-center justify-between gap-4 mt-0.5">
-            <p className="text-sm text-muted-foreground shrink-0">
+            <p className="text-sm text-muted-foreground dark:text-slate-400 shrink-0">
               {deck.cards.length} cards
             </p>
 
-            {/* Renders the dual-purpose client progress manager */}
             {deck.status === "active" && (
               <DeckCardProgressBar deckId={deck.id} />
             )}

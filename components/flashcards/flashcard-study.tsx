@@ -13,9 +13,7 @@ export default function FlashcardStudy({ question, answer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {/* The Interactive Card Container
-        Perspective utilities create a smooth 3D flipping animation effect 
-      */}
+      {/* The Interactive Card Container */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
         className="w-full max-w-md h-87.5 cursor-pointer group perspective-[1000px]"
@@ -35,35 +33,43 @@ export default function FlashcardStudy({ question, answer }: Props) {
           }`}
         >
           {/* FRONT SIDE (Question) */}
-          <div className="absolute inset-0 bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between backface-hidden">
+          {/* FIXED: Added dark:bg-slate-900 and your signature crisp dark:border-slate-700 border framework */}
+          <div className="absolute inset-0 bg-white dark:bg-slate-700/60 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 flex flex-col justify-between backface-hidden transition-colors">
             <div className="flex-1 flex items-center justify-center text-center">
-              <p className="text-xl sm:text-2xl font-semibold text-slate-800">
+              {/* FIXED: Upgraded static question text from text-slate-800 to text-slate-900 dark:text-slate-100 */}
+              <p className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">
                 {question}
               </p>
             </div>
 
             {/* Subtle, intuitive visual helper text at the bottom */}
-            <div className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground group-hover:text-brand-purple transition-colors shrink-0">
+            {/* FIXED: Added dark:text-slate-400 and dark:group-hover:text-purple-400 */}
+            <div className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground dark:text-slate-400 group-hover:text-brand-purple dark:group-hover:text-purple-400 transition-colors shrink-0">
               <RotateCw size={12} />
               <span>Click card to show answer</span>
             </div>
           </div>
 
-          <div className="absolute inset-0 bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between backface-hidden transform-[rotateY(180deg)]">
-            <div className=" my-auto flex-1 overflow-y-auto pr-1 flex flex-col justify-start text-center">
+          {/* BACK SIDE (Answer) */}
+          {/* FIXED: Applied identical layout backing definitions: dark:bg-slate-900 and dark:border-slate-700 */}
+          <div className="absolute inset-0 bg-white dark:bg-slate-700/60 p-6 rounded-xl shadow-md border border-gray-100 dark:border-slate-700 flex flex-col justify-between backface-hidden transform-[rotateY(180deg)] transition-colors">
+            <div className="my-auto flex-1 overflow-y-auto pr-1 flex flex-col justify-start text-center">
               <div className="flex-1 overflow-y-auto pr-1 flex flex-col justify-start">
                 <div className="my-auto py-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-purple mb-3 block shrink-0">
+                  {/* FIXED: Shifted light-mode purple variable over to dark:text-purple-400 for better night neon contrast */}
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-purple dark:text-purple-400 mb-3 block shrink-0">
                     Answer
                   </span>
-                  <p className="text-base sm:text-lg text-slate-600 wrap-break-word">
+                  {/* FIXED: Changed standard copy text from text-slate-600 to text-slate-700 dark:text-slate-200 */}
+                  <p className="text-base sm:text-lg text-slate-700 dark:text-slate-200 wrap-break-word">
                     {answer}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground shrink-0">
+            {/* FIXED: Muted bottom toggle guide tracking elements cleanly via dark:text-slate-400 */}
+            <div className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground dark:text-slate-400 shrink-0">
               <RotateCw size={12} />
               <span>Click card to show question</span>
             </div>

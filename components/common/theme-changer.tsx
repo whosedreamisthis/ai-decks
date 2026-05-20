@@ -17,7 +17,7 @@ const ThemeChanger = () => {
   if (!mounted) return <div className="w-4.5 h-4.5" />;
 
   return (
-    <div className="text-black dark:text-slate-800  cursor-pointer transition-colors">
+    <div className="text-black  dark:text-white  cursor-pointer transition-colors">
       {theme === "dark" ? (
         /* FIXED: Sun icon should set the theme to light */
         <Sun onClick={() => setTheme("light")} size={18} />

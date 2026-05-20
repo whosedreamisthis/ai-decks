@@ -17,7 +17,7 @@ const Flashcard = ({ card, variant, deckId }: Props) => {
     case "expanded":
       return <FlashcardExpanded {...card} deckId={deckId} />;
     case "study":
-      return <FlashcardStudy {...card} deckId={deckId} />;
+      return <FlashcardStudy {...card} />;
     default:
       console.error(`invalid flashcard variant: ${variant}`);
   }

@@ -26,7 +26,6 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
           const { percentage } = JSON.parse(savedActiveSession);
           return percentage > 0;
         } catch (error) {
-          // Fallback if localstorage JSON is ever corrupted
           return false;
         }
       }
@@ -36,23 +35,28 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
     setCurrentDecks(filtered);
   }, [decks]);
 
-  // Loading skeleton layout matching the frame boundaries exactly
   if (!isMounted) {
     return (
-      <div className="flex-1 bg-white flex flex-col mx-5 md:m-5 shadow-md p-5 border border-gray-200 rounded-md w-auto h-full animate-pulse">
-        <p className="text-xl font-bold text-slate-800">Current Decks</p>
-        <div className="h-24 bg-slate-100 rounded mt-4" />
+      /* FIXED: Added dark:border-slate-700 to the skeleton loader border */
+      <div className="flex-1 bg-white dark:bg-slate-900 flex flex-col mx-5 md:m-5 shadow-md p-5 border border-gray-200 dark:border-slate-700 rounded-md w-auto h-full animate-pulse">
+        <p className="text-xl font-bold text-slate-800 dark:text-slate-100">
+          Current Decks
+        </p>
+        <div className="h-24 bg-slate-100 dark:bg-slate-800 rounded mt-4" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-white flex flex-col my-5 mx-5 md:m-5 shadow-md p-5 border border-gray-200 rounded-md w-auto h-full">
+    /* FIXED: Updated shell wrapper border to dark:border-slate-700 so it matches the inner cards perfectly */
+    <div className="flex-1 bg-white dark:bg-slate-900 flex flex-col my-5 mx-5 md:m-5 shadow-md p-5 border border-gray-200 dark:border-slate-700 rounded-md w-auto h-full transition-colors">
       <div className="flex items-center justify-between shrink-0 mb-4">
-        <p className="text-xl font-bold text-slate-800">Current Decks</p>
+        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
+          Current Decks
+        </p>
         <Link
           href="/decks"
-          className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors group"
+          className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
         >
           <span>View all decks</span>
           <MoveRight
@@ -67,8 +71,9 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
           <DeckList decks={currentDecks} />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center min-h-[140px] text-center border-2 border-dashed border-slate-100 rounded-xl p-4">
-          <p className="text-sm text-muted-foreground max-w-xs">
+        /* FIXED: Lightened the inner empty dashboard slot dashed border structure to dark:border-slate-700/60 */
+        <div className="flex-1 flex flex-col items-center justify-center min-h-[140px] text-center border-2 border-dashed border-slate-100 dark:border-slate-700/60 rounded-xl p-4">
+          <p className="text-sm text-muted-foreground dark:text-slate-400 max-w-xs">
             There are no active study sessions at the moment. Pick a deck or
             generate one to begin!
           </p>
