@@ -44,6 +44,7 @@ const StudySession = ({
           <ChevronLeft size={20} />
           <span>Previous Card</span>
         </Button>
+        <h1 className="text-center text-xl font-bold">{deck.title}</h1>
 
         {/* Display Current Flashcard Context */}
         <FlashcardStudy {...currentCard} />

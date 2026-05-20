@@ -11,7 +11,8 @@ interface DeckCardProgressBarProps {
 export default function DeckCardProgressBar({
   deckId,
 }: DeckCardProgressBarProps) {
-  const [displayPercentage, setDisplayPercentage] = useState<number>(0);
+  const [scorePercentage, setScorePercentage] = useState<number>(0);
+  const [progressPercentage, setProgressPercentage] = useState<number>(0);
   const [label, setLabel] = useState<string>("Best Score");
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function DeckCardProgressBar({
     if (savedActiveSession) {
       try {
         const { percentage } = JSON.parse(savedActiveSession);
-        setDisplayPercentage(percentage || 0);
+        setProgressPercentage(percentage || 0);
         setLabel("In Progress");
         return; // Prioritize showing active session location
       } catch (e) {
@@ -33,10 +34,10 @@ export default function DeckCardProgressBar({
     // 2. If no active session, fall back to showing their permanent best score record
     if (savedBestScore) {
       const bestScoreNum = parseInt(savedBestScore, 10);
-      setDisplayPercentage(isNaN(bestScoreNum) ? 0 : bestScoreNum);
+      setScorePercentage(isNaN(bestScoreNum) ? 0 : bestScoreNum);
       setLabel("Best Score");
     } else {
-      setDisplayPercentage(0);
+      setScorePercentage(0);
       setLabel("Unstarted");
     }
   }, [deckId]);
@@ -44,10 +45,10 @@ export default function DeckCardProgressBar({
   return (
     <div className="flex flex-col items-end justify-end gap-0.5 flex-1 max-w-27.5">
       <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block leading-none">
-        {label} ({displayPercentage}%)
+        {label} ({scorePercentage}%)
       </p>
       <div className="w-full pt-0.5">
-        <ProgressBar percentage={displayPercentage} isFull={false} />
+        <ProgressBar percentage={progressPercentage} isFull={false} />
       </div>
     </div>
   );

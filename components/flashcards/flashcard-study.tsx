@@ -37,7 +37,7 @@ export default function FlashcardStudy({ question, answer }: Props) {
           {/* FRONT SIDE (Question) */}
           <div className="absolute inset-0 bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col justify-between backface-hidden">
             <div className="flex-1 flex items-center justify-center text-center">
-              <p className="text-xl sm:text-2xl font-bold text-slate-800">
+              <p className="text-xl sm:text-2xl font-semibold text-slate-800">
                 {question}
               </p>
             </div>
