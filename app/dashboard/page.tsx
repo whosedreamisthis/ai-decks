@@ -26,7 +26,7 @@ const DashboardPage = async () => {
         activeDecksCount={5}
       />
       <CreateNewDeckCard />
-      <CurrentDecks decks={decks} userProgress={allUserProgress} />
+      <CurrentDecks decks={decks} />
     </div>
   );
 };
