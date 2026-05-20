@@ -54,9 +54,13 @@ const DashboardPage = async () => {
         totalCardCount={totalCardCount}
         activeDecksCount={activeDecksCount}
       />
-      <div className="flex flex-col md:flex-row">
-        <CreateNewDeckCard />
-        <CurrentDecks decks={activeDecks} />
+      <div className="flex flex-col md:flex-row items-center w-full max-w-6xl mx-auto">
+        <div className="flex-1 w-full flex flex-col">
+          <CreateNewDeckCard />
+        </div>
+        <div className="flex-1 w-full flex flex-col">
+          <CurrentDecks decks={activeDecks} />
+        </div>
       </div>
     </div>
   );

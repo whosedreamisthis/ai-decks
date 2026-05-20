@@ -36,32 +36,43 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
     setCurrentDecks(filtered);
   }, [decks]);
 
+  // Loading skeleton layout matching the frame boundaries exactly
   if (!isMounted) {
     return (
-      <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md animate-pulse">
-        <p className="text-xl font-bold">Current Decks</p>
-        <div className="h-24 bg-gray-100 rounded mt-4" />
+      <div className="flex-1 bg-white flex flex-col mx-5 md:m-5 shadow-md p-5 border border-gray-200 rounded-md w-auto h-full animate-pulse">
+        <p className="text-xl font-bold text-slate-800">Current Decks</p>
+        <div className="h-24 bg-slate-100 rounded mt-4" />
       </div>
     );
   }
 
   return (
-    <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md md:w-[50%] w-auto">
-      <div className="flex items-center justify-between">
-        <p className="text-xl font-bold">Current Decks</p>
-        <Link href="/decks" className="flex gap-2">
-          <p>View all decks</p>
-          <MoveRight />
+    <div className="flex-1 bg-white flex flex-col my-5 mx-5 md:m-5 shadow-md p-5 border border-gray-200 rounded-md w-auto h-full">
+      <div className="flex items-center justify-between shrink-0 mb-4">
+        <p className="text-xl font-bold text-slate-800">Current Decks</p>
+        <Link
+          href="/decks"
+          className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors group"
+        >
+          <span>View all decks</span>
+          <MoveRight
+            size={16}
+            className="transform group-hover:translate-x-1 transition-transform"
+          />
         </Link>
       </div>
+
       {currentDecks.length > 0 ? (
-        <DeckList decks={currentDecks} />
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <DeckList decks={currentDecks} />
+        </div>
       ) : (
-        <>
-          <p className="text-center text-sm mt-10">
-            There are no active decks.
+        <div className="flex-1 flex flex-col items-center justify-center min-h-[140px] text-center border-2 border-dashed border-slate-100 rounded-xl p-4">
+          <p className="text-sm text-muted-foreground max-w-xs">
+            There are no active study sessions at the moment. Pick a deck or
+            generate one to begin!
           </p>
-        </>
+        </div>
       )}
     </div>
   );
