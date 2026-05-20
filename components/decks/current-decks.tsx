@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { Deck } from "@/lib/types";
 import DeckList from "@/components/decks/deck-list";
-import { MoveRight } from "lucide-react";
-import Link from "next/link";
 
 interface CurrentDecksProps {
   decks: Deck[];
@@ -61,16 +59,6 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
         <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
           Current Decks
         </p>
-        <Link
-          href="/decks"
-          className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100  group"
-        >
-          <span>View all decks</span>
-          <MoveRight
-            size={16}
-            className="transform group-hover:translate-x-1 transition-transform"
-          />
-        </Link>
       </div>
 
       {currentDecks.length > 0 ? (
