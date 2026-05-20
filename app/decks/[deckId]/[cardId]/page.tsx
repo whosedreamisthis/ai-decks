@@ -39,7 +39,7 @@ const CardPage = async ({ params }: Props) => {
   const nextCardId = deck.cards[nextIndex].id;
 
   return (
-    <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
+    <div className="min-h-screen overflow-hidden p-5 pb-25">
       {/* GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
       <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm">
         <BreadCrumbs deckUrl={deckUrl} exitLabel="Exit" />

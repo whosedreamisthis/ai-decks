@@ -21,7 +21,7 @@ export default async function HomePage() {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-[calc
-    (100vh-64px)] bg-brand-bg text-brand-text p-4"
+    (100vh-64px)] text-brand-text p-4"
     >
       <div className="flex flex-col items-center gap-8 max-w-2xl text-center">
         {/* Large Logo */}

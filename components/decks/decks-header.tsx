@@ -8,7 +8,7 @@ const DecksHeader = () => {
     <div className="flex items-center justify-between">
       <PageHeader title="Your Decks" />
       <Link href="/dashboard" className="flex gap-2 mr-5">
-        <p>View current decks</p>
+        <p>Home</p>
         <MoveRight />
       </Link>
     </div>

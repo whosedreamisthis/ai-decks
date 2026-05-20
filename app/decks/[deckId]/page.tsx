@@ -4,6 +4,7 @@ import Flashcard from "@/components/flashcards/flashcard";
 import BackButton from "../../../components/common/back-button";
 import { Play } from "lucide-react";
 import Link from "next/link";
+import BreadCrumbs from "@/components/common/bread-crumbs";
 
 interface Props {
   params: Promise<{ deckId: string }>;
@@ -18,11 +19,12 @@ const DeckPage = async ({ params }: Props) => {
   }
 
   return (
-    <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
-      <div className="flex items-center justify-between mb-4">
-        <BackButton fallbackUrl="/dashboard" />
-      </div>{" "}
+    <div className="min-h-screen overflow-hidden p-5 pb-25">
       <div className="flex flex-col items-center text-center max-w-md mx-auto mt-4 mb-8">
+        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm w-full">
+          <BreadCrumbs deckUrl={`/decks/${deck.id}`} exitLabel="" />
+        </div>
+
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
           {deck.title}
         </h1>

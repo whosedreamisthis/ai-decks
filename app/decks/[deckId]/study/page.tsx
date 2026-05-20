@@ -13,7 +13,7 @@ const StudyPage = async ({
   if (!deck.cards || deck.cards.length === 0)
     return <div>No cards in deck</div>;
   return (
-    <div className="min-h-screen bg-brand-blue/10 overflow-hidden pb-25">
+    <div className="min-h-screen  overflow-hidden pb-25">
       <StudySessionEngine deck={deck} />
     </div>
   );

@@ -5,6 +5,7 @@ import "./globals.css";
 import TopNav from "@/components/nav/top-nav";
 import { ClerkProvider } from "@clerk/nextjs";
 import { cookies } from "next/headers";
+import { ThemeProvider } from "next-themes";
 
 const sansFont = Inter({
   subsets: ["latin"],
@@ -32,12 +33,16 @@ export default async function RootLayout({
       className={`${sansFont.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="antialiased bg-brand-bg text-brand-text h-full">
+      <body className="antialiased bg-brand-bg text-brand-text h-full ">
         <ClerkProvider>
-          <div className="min-h-screen flex flex-col">
-            <TopNav isDemo={isDemo} />
-            <main className="flex-1">{children}</main>
-          </div>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="min-h-screen flex flex-col">
+              <TopNav isDemo={isDemo} />
+              <main className="flex-1 bg-brand-blue/10 dark:bg-slate-900">
+                {children}
+              </main>
+            </div>
+          </ThemeProvider>
         </ClerkProvider>
       </body>
     </html>

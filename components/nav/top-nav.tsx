@@ -8,6 +8,7 @@ import { resetDecks } from "@/lib/actions/decks";
 import { Button } from "@/components/ui/button";
 import DemoProfile from "@/components/nav/demo-profile";
 import Link from "next/link";
+import ThemeChanger from "@/components/common/theme-changer";
 
 const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   const pathname = usePathname();
@@ -36,8 +37,8 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
   };
 
   return (
-    <div className="sticky top-0 bg-white z-50">
-      <div className=" bg-white flex  items-center justify-between px-5 py-2">
+    <div className="sticky top-0  z-50 ">
+      <div className=" bg-white dark:bg-slate-700 flex  items-center justify-between px-5 py-2">
         <div className="flex items-center justify-start gap-4">
           <Link href="/dashboard">
             <Logo />
@@ -51,7 +52,9 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
             </Button>
           )}
         </div>
-        <div className="flex items-center">
+
+        <div className="flex items-center justify-end gap-3">
+          <ThemeChanger />
           {isDemo ? <DemoProfile /> : <UserProfile />}
         </div>
       </div>

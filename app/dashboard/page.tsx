@@ -47,7 +47,7 @@ const DashboardPage = async () => {
   const overallProficiency = `${computedProficiency}%`;
 
   return (
-    <div className="min-h-screen bg-brand-blue/10 overflow-hidden pb-25">
+    <div className="min-h-screen  overflow-hidden pb-25">
       <DashboardHeader isDemo={isDemo} />
       <DashboardSummary
         overallProficiency={overallProficiency}
