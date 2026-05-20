@@ -3,7 +3,7 @@
 import { Deck, ResultsSummaryData } from "@/lib/types";
 import React, { useState, useEffect } from "react";
 import StudySession from "@/components/study/study-session";
-import { finalizeStudySessionAction } from "@/lib/actions/study";
+import { finalizeStudySessionAction } from "@/lib/actions/session";
 
 interface Props {
   deck: Deck;
