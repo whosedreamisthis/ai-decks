@@ -20,7 +20,7 @@ const UserProfile = () => {
       <Show when="signed-out">
         <SignInButton mode="modal">
           <button
-            className="rounded-full bg-transparent p-2 transition-colors hover:bg-stone-100 dark:hover:bg-white/5"
+            className="rounded-full bg-transparent p-2  hover:bg-stone-100 dark:hover:bg-white/5"
             aria-label="Sign In"
           >
             <LogIn size={20} />

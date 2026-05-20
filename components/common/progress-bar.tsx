@@ -13,7 +13,7 @@ const ProgressBar = ({
     >
       <div className="absolute inset-0 bg-slate-200/80 dark:bg-stone-700 rounded-full"></div>
       <div
-        className={`absolute inset-0 rounded-full bg-brand-blue transition-all duration-30`}
+        className={`absolute inset-0 rounded-full bg-brand-blue  duration-30`}
         style={{
           width: `${Math.min(percentage, 100)}%`,
         }}

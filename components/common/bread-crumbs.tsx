@@ -15,7 +15,7 @@ const BreadCrumbs = ({ deckUrl, exitLabel }: Props) => {
         <Link
           href="/dashboard"
           /* FIXED: Added dark:hover:text-slate-100 so the link lights up cleanly at night */
-          className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+          className="hover:text-slate-900 dark:hover:text-slate-100 "
         >
           Home
         </Link>
@@ -27,7 +27,7 @@ const BreadCrumbs = ({ deckUrl, exitLabel }: Props) => {
 
         <Link
           href="/decks"
-          className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors text-brand-purple dark:text-purple-400 font-semibold"
+          className="hover:text-slate-900 dark:hover:text-slate-100  text-brand-purple dark:text-purple-400 font-semibold"
         >
           Decks
         </Link>
@@ -36,7 +36,7 @@ const BreadCrumbs = ({ deckUrl, exitLabel }: Props) => {
       <Link
         href={deckUrl}
         /* FIXED: Swapped light gray text-slate-400 to dark:text-slate-500, keeping your red hover escape active */
-        className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+        className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 "
       >
         {exitLabel}
       </Link>

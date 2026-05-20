@@ -40,14 +40,14 @@ const StudySession = ({
     <div>
       <div className="flex flex-col gap-3 m-5 justify-center">
         {/* FIXED: Changed dark:border-slate-800/80 to dark:border-slate-700 to provide a solid, visible light border around the breadcrumbs in dark mode */}
-        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm w-full transition-colors">
+        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm w-full ">
           <BreadCrumbs deckUrl={`/decks/${deck.id}`} exitLabel="Exit Session" />
         </div>
 
         <div className="w-full max-w-xl mx-auto flex items-center justify-start -mt-2">
           <Button
             variant="ghost"
-            className="flex items-center gap-1 px-2 text-muted-foreground dark:text-slate-300 hover:text-slate-800 dark:hover:text-white transition-colors text-xs font-medium h-auto pt-1 disabled:opacity-30"
+            className="flex items-center gap-1 px-2 text-muted-foreground dark:text-slate-300 hover:text-slate-800 dark:hover:text-white  text-xs font-medium h-auto pt-1 disabled:opacity-30"
             onClick={handlePreviousCard}
             disabled={currentIndex === 0}
           >

@@ -101,7 +101,7 @@ export default function AIGenerationModal({
           </div>
           <button
             onClick={handleCloseWrapper}
-            className="p-1 text-muted-foreground hover:text-slate-800 rounded-lg transition-colors"
+            className="p-1 text-muted-foreground hover:text-slate-800 rounded-lg "
             disabled={isLoading}
             aria-label="Close modal"
           >

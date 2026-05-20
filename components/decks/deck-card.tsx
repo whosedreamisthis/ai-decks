@@ -13,7 +13,7 @@ interface DeckCardProps {
 const DeckCard = ({ deck }: DeckCardProps) => {
   return (
     /* FIXED: Changed dark:border-slate-800 to dark:border-slate-700 for a visible light border outline in dark mode */
-    <div className="relative flex flex-col shadow-md bg-white dark:bg-slate-700/60 border border-gray-200 dark:border-slate-700 rounded-md hover:border-slate-300 dark:hover:border-slate-500 transition-all">
+    <div className="relative flex flex-col shadow-md bg-white dark:bg-slate-700/60 border border-gray-200 dark:border-slate-700 rounded-md hover:border-slate-300 dark:hover:border-slate-500 ">
       <div className="relative z-10">
         <DeckActions deckId={deck.id} status={deck.status} />
       </div>

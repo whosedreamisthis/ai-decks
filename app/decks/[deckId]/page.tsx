@@ -23,7 +23,7 @@ const DeckPage = async ({ params }: Props) => {
     <div className="min-h-screen overflow-hidden p-5 pb-25">
       <div className="flex flex-col items-center text-center max-w-md mx-auto mt-4 mb-8">
         {/* FIXED: Applied dark:bg-slate-900/60 and the crisp dark:border-slate-700 illuminated layout border to match your study session exactly */}
-        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm w-full transition-colors">
+        <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm w-full ">
           {/* Passed /decks as the exit URL since we are already on the specific deck profile summary view */}
           <BreadCrumbs deckUrl="/decks" exitLabel="" />
         </div>
@@ -40,7 +40,7 @@ const DeckPage = async ({ params }: Props) => {
         {/* Central, highly visible Play Button Link */}
         <Link
           href={`/decks/${deckId}/study`}
-          className="flex items-center justify-center gap-3 w-full py-4 px-6 bg-brand-purple hover:bg-brand-purple/90 dark:bg-purple-600 dark:hover:bg-purple-500 text-white font-semibold rounded-xl shadow-md active:scale-[0.98] transition-all text-base group"
+          className="flex items-center justify-center gap-3 w-full py-4 px-6 bg-brand-purple hover:bg-brand-purple/90 dark:bg-purple-600 dark:hover:bg-purple-500 text-white font-semibold rounded-xl shadow-md active:scale-[0.98] transition-transform text-base group"
           replace
         >
           <Play

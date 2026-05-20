@@ -26,7 +26,7 @@ export default function BackButton({
     <a
       href={fallbackUrl}
       onClick={handleBackClick}
-      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 select-none"
+      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground  mb-4 select-none"
     >
       <ArrowLeft size={16} />
       <span>Back</span>

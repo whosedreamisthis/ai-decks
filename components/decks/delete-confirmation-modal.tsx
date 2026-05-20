@@ -34,7 +34,7 @@ export default function DeleteConfirmationModal({
         {/* Close Icon in the corner */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 "
           aria-label="Close modal"
         >
           <X className="h-5 w-5" />
@@ -59,13 +59,13 @@ export default function DeleteConfirmationModal({
         <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3">
           <Button
             variant="outline"
-            className="w-full sm:w-auto px-5 h-10 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors"
+            className="w-full sm:w-auto px-5 h-10 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium "
             onClick={onClose}
           >
             Cancel
           </Button>
           <Button
-            className="w-full sm:w-auto px-5 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium shadow-sm transition-colors"
+            className="w-full sm:w-auto px-5 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium shadow-sm "
             onClick={onDelete}
           >
             Delete permanently

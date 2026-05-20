@@ -48,21 +48,21 @@ const ResultsSummary = ({
       <div className="flex flex-col gap-2 w-full">
         <button
           onClick={handleResetAndRestartStudy} // Clears states back to 0
-          className="w-full py-3 bg-brand-purple text-white font-semibold rounded-xl hover:bg-brand-purple/90 transition-colors"
+          className="w-full py-3 bg-brand-purple text-white font-semibold rounded-xl hover:bg-brand-purple/90 "
         >
           Study Again
         </button>
         <div className="flex gap-2">
           <Link
             href="/dashboard"
-            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors block text-center"
+            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50  block text-center"
             replace
           >
             Dashboard
           </Link>
           <Link
             href={`/decks/${deckId}`}
-            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors block text-center"
+            className="flex-1 py-3 bg-white border border-gray-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50  block text-center"
             replace
           >
             Deck Details

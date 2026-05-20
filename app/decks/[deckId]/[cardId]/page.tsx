@@ -49,7 +49,7 @@ const CardPage = async ({ params }: Props) => {
     <div className="min-h-screen overflow-hidden p-5 pb-25">
       {/* GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
       {/* FIXED: Added dark:bg-slate-900/60 and your crisp dark:border-slate-700 illuminated layout border */}
-      <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm transition-colors">
+      <div className="max-w-md mx-auto mb-6 flex items-center justify-between text-xs sm:text-sm bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 dark:border-slate-700 shadow-sm ">
         <BreadCrumbs deckUrl={deckUrl} exitLabel="Exit" />
       </div>
 
@@ -69,7 +69,7 @@ const CardPage = async ({ params }: Props) => {
           {/* FIXED: Configured the "Previous" link container card to swap to bg-slate-900 with your crisp dark:border-slate-700 outline */}
           <Link
             href={`/decks/${deckId}/${prevCardId}`}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-md shadow-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-md shadow-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800  text-sm"
             replace
           >
             <ChevronLeft size={16} />
@@ -84,7 +84,7 @@ const CardPage = async ({ params }: Props) => {
           {/* FIXED: Replaced unmapped hover:bg-brand-blue/90 with hover:bg-brand-mint/90 or dark controls to avoid confusing color flashing */}
           <Link
             href={`/decks/${deckId}/${nextCardId}`}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-mint hover:bg-brand-mint/90 text-white rounded-md shadow-sm transition-colors text-sm font-semibold"
+            className="flex items-center gap-2 px-4 py-2 bg-brand-mint hover:bg-brand-mint/90 text-white rounded-md shadow-sm text-sm font-semibold"
             replace
           >
             <span>Next</span>

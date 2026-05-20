@@ -42,7 +42,7 @@ const DeckActions = ({
     <div className="absolute top-2 right-2 z-20">
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex items-center justify-center text-gray-800 hover:text-gray-600 transition-colors z-10 p-1 m-0 border-none focus:outline-none focus-visible:ring-0 select-none cursor-pointer rounded-full hover:bg-gray-100"
+          className="flex items-center justify-center text-gray-800 hover:text-gray-600  z-10 p-1 m-0 border-none focus:outline-none focus-visible:ring-0 select-none cursor-pointer rounded-full hover:bg-gray-100"
           onClick={(e) => {
             e.stopPropagation();
           }}

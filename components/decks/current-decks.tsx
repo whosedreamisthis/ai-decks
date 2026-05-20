@@ -49,14 +49,14 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
 
   return (
     /* FIXED: Updated shell wrapper border to dark:border-slate-700 so it matches the inner cards perfectly */
-    <div className="flex-1 bg-white dark:bg-slate-900 flex flex-col my-5 mx-5 md:m-5 shadow-md p-5 border border-gray-200 dark:border-slate-700 rounded-md w-auto h-full transition-colors">
+    <div className="flex-1 bg-white dark:bg-slate-900 flex flex-col my-5 mx-5 md:m-5 shadow-md p-5 border border-gray-200 dark:border-slate-700 rounded-md w-auto h-full ">
       <div className="flex items-center justify-between shrink-0 mb-4">
         <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
           Current Decks
         </p>
         <Link
           href="/decks"
-          className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
+          className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100  group"
         >
           <span>View all decks</span>
           <MoveRight

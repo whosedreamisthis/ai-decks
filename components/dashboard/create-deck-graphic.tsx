@@ -10,15 +10,15 @@ export default function CreateDeckGraphic() {
 
       {/* Browser Window 3 (Back Layer) */}
       {/* FIXED: Changed bg-white/60 to dark:bg-slate-900/40 and adjusted boundaries to use your crisp dark:border-slate-700 outline */}
-      <div className="absolute left-2 top-6 w-20 h-16 bg-white/60 dark:bg-slate-900/40 border border-emerald-600/20 dark:border-slate-700/50 rounded-lg shadow-xs transition-colors" />
+      <div className="absolute left-2 top-6 w-20 h-16 bg-white/60 dark:bg-slate-900/40 border border-emerald-600/20 dark:border-slate-700/50 rounded-lg shadow-xs " />
 
       {/* Browser Window 2 (Middle Layer) */}
       {/* FIXED: Changed bg-white/80 to dark:bg-slate-900/70 */}
-      <div className="absolute left-4 top-4 w-20 h-16 bg-white/80 dark:bg-slate-900/70 border border-emerald-600/30 dark:border-slate-700 rounded-lg shadow-xs transition-colors" />
+      <div className="absolute left-4 top-4 w-20 h-16 bg-white/80 dark:bg-slate-900/70 border border-emerald-600/30 dark:border-slate-700 rounded-lg shadow-xs " />
 
       {/* Browser Window 1 (Front Active Layer) */}
       {/* FIXED: Changed main wrapper surface fill to dark:bg-slate-900 with your distinct light border (dark:border-slate-700) */}
-      <div className="absolute left-6 top-8 w-22 h-18 bg-white dark:bg-slate-900 border border-emerald-600/40 dark:border-slate-700 rounded-xl shadow-md p-2 flex flex-col gap-1.5 transition-colors">
+      <div className="absolute left-6 top-8 w-22 h-18 bg-white dark:bg-slate-900 border border-emerald-600/40 dark:border-slate-700 rounded-xl shadow-md p-2 flex flex-col gap-1.5 ">
         {/* Browser Top Header Dot/Bar */}
         <div className="flex gap-1 items-center border-b border-gray-100 dark:border-slate-800 pb-1">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />

@@ -34,7 +34,7 @@ const FlashcardExpanded = ({ question, answer }: Props) => {
         <div
           onClick={handleFlip}
           /* FIXED: Swapped light properties for bg-white dark:bg-slate-900 and border-gray-100 dark:border-slate-700 */
-          className="absolute inset-0 w-full h-full backface-hidden bg-white dark:bg-slate-700/60 p-6 rounded-lg shadow-md border border-gray-100 dark:border-slate-700 flex flex-col justify-center items-center text-center transition-colors"
+          className="absolute inset-0 w-full h-full backface-hidden bg-white dark:bg-slate-700/60 p-6 rounded-lg shadow-md border border-gray-100 dark:border-slate-700 flex flex-col justify-center items-center text-center "
         >
           {/* FIXED: Swapped static subtitle text to support dark:text-slate-400 */}
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
@@ -50,7 +50,7 @@ const FlashcardExpanded = ({ question, answer }: Props) => {
         <div
           onClick={handleFlip}
           /* FIXED: Synced styling properties identically to the front layout surface (dark:bg-slate-900 dark:border-slate-700) */
-          className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-white dark:bg-slate-700/60 p-6 rounded-lg shadow-md border border-gray-100 dark:border-slate-700 flex flex-col overflow-hidden transition-colors"
+          className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-white dark:bg-slate-700/60 p-6 rounded-lg shadow-md border border-gray-100 dark:border-slate-700 flex flex-col overflow-hidden "
         >
           {/* Header area */}
           {/* FIXED: Swapped static layout parameters to include text-slate-400 dark:text-slate-500 */}
