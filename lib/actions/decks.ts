@@ -1,13 +1,12 @@
-// @/lib/actions/decks.ts
-// @/lib/actions/decks.ts
 "use server";
 
+import { updateTag } from "next/cache";
 import { cache } from "react";
-import { revalidatePath } from "next/cache";
 import { getDb, setDecks } from "@/lib/db";
 import { MOCK_DECKS } from "@/lib/mock-data";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
 interface RawGeneratedCard {
   question: string;
@@ -44,15 +43,25 @@ export async function createAiDeckAction(
 
   db.decks.push(newDeck);
 
-  revalidatePath("/dashboard");
-  revalidatePath("/decks");
+  updateTag("decks");
   redirect(`/decks/${newDeckId}`);
 }
 
 export const getDecks = async (filter: "active" | "archived" | "all") => {
-  const db = getDb();
-  // Add fallback fallback checking array arrays to avoid undefined crashes
-  const decks = db.decks || [];
+  // 1. Wrap the raw database retrieval in Next.js's data cache wrapper
+  const getCachedDecks = unstable_cache(
+    async () => {
+      const db = getDb();
+      return db.decks || [];
+    },
+    ["decks-storage-key"], // Unique cache identifier string
+    { tags: ["decks"] }, // This links it to your updateTag("decks") calls!
+  );
+
+  // 2. Fetch the cached array
+  const decks = await getCachedDecks();
+
+  // 3. Apply your client-facing filtering logic on the cached data
   return decks.filter((deck) => filter === "all" || deck.status === filter);
 };
 
@@ -70,8 +79,7 @@ export const resetDecks = async () => {
   db.deckProgress = [];
   db.activeDeckSession = [];
 
-  revalidatePath("/dashboard");
-  revalidatePath("/decks");
+  updateTag("decks");
   console.log("Reset database to clean mock data state.");
 };
 
@@ -84,8 +92,7 @@ export const archiveDeck = async (deckId: string) => {
       deck.id === deckId ? { ...deck, status: "archived" } : deck,
     ),
   );
-  revalidatePath("/dashboard");
-  revalidatePath("/decks");
+  updateTag("decks");
 };
 
 export const unarchiveDeck = async (deckId: string) => {
@@ -95,13 +102,11 @@ export const unarchiveDeck = async (deckId: string) => {
       deck.id === deckId ? { ...deck, status: "active" } : deck,
     ),
   );
-  revalidatePath("/dashboard");
-  revalidatePath("/decks");
+  updateTag("decks");
 };
 
 export const deleteDeck = async (deckId: string) => {
   const db = getDb();
   setDecks(db.decks.filter((deck) => deckId !== deck.id));
-  revalidatePath("/dashboard");
-  revalidatePath("/decks");
+  updateTag("decks");
 };

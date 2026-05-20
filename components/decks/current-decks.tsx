@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import { Deck } from "@/lib/types";
 import DeckList from "@/components/decks/deck-list";
 
@@ -9,16 +9,39 @@ interface CurrentDecksProps {
 }
 
 const CurrentDecks = ({ decks }: CurrentDecksProps) => {
-  const currentDecks = decks.filter((deck) => {
-    const savedActiveSession = localStorage.getItem(`study_session_${deck.id}`);
-    if (savedActiveSession) {
-      const { percentage } = JSON.parse(savedActiveSession);
+  const [currentDecks, setCurrentDecks] = useState<Deck[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
-      return percentage > 0;
-    }
+  useEffect(() => {
+    setIsMounted(true);
 
-    return false;
-  });
+    const filtered = decks.filter((deck) => {
+      const savedActiveSession = localStorage.getItem(
+        `study_session_${deck.id}`,
+      );
+      if (savedActiveSession) {
+        try {
+          const { percentage } = JSON.parse(savedActiveSession);
+          return percentage > 0;
+        } catch (error) {
+          // Fallback if localstorage JSON is ever corrupted
+          return false;
+        }
+      }
+      return false;
+    });
+
+    setCurrentDecks(filtered);
+  }, [decks]);
+
+  if (!isMounted) {
+    return (
+      <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md animate-pulse">
+        <p className="text-xl font-bold">Current Decks</p>
+        <div className="h-24 bg-gray-100 rounded mt-4" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white flex flex-col gap-4 m-5 shadow-md p-5 border border-gray-200 rounded-md">
