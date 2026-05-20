@@ -37,12 +37,12 @@ const DeckCard = ({ deck }: DeckCardProps) => {
           <p className="text-md font-bold text-slate-800 truncate">
             {deck.title}
           </p>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4 mt-0.5">
             <p className="text-sm text-muted-foreground shrink-0">
               {deck.cards.length} cards
             </p>
 
-            {/* Renders the client-side progress reader dynamically */}
+            {/* Renders the dual-purpose client progress manager */}
             {deck.status === "active" && (
               <DeckCardProgressBar deckId={deck.id} />
             )}

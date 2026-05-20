@@ -37,6 +37,20 @@ export default function StudySessionEngine({ deck }: Props) {
 
     setResultsSummary({ totalAnswered, correctCount, accuracy });
     setIsFinished(true);
+
+    // PERSIST BEST SCORE LOCALLY
+    try {
+      const currentBest = localStorage.getItem(`deck_best_score_${deckId}`);
+      const previousHighScore = currentBest ? parseInt(currentBest, 10) : 0;
+
+      if (accuracy > previousHighScore) {
+        localStorage.setItem(`deck_best_score_${deckId}`, accuracy.toString());
+      }
+    } catch (e) {
+      console.error("Failed to save best score to localStorage:", e);
+    }
+
+    // Clean up temporary active mid-session progress data
     handleClearSession();
 
     try {
@@ -67,11 +81,10 @@ export default function StudySessionEngine({ deck }: Props) {
     setIsLoaded(true);
   }, [deckId]);
 
-  // Automatically sync to localStorage on modifications
+  // Automatically sync running active session progress to localStorage
   useEffect(() => {
     if (!isLoaded || isFinished) return;
 
-    // Calculate live progress percentage to save directly to disk
     const progressPercentage = Math.round((currentIndex / cards.length) * 100);
 
     const sessionData = {
@@ -83,7 +96,6 @@ export default function StudySessionEngine({ deck }: Props) {
       `study_session_${deckId}`,
       JSON.stringify(sessionData),
     );
-    console.log("Session data saved to localStorage", sessionData);
   }, [
     currentIndex,
     sessionProgress,
@@ -128,7 +140,7 @@ export default function StudySessionEngine({ deck }: Props) {
 
   if (isFinished && resultsSummary) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-md border border-gray-100 max-w-md mx-auto mt-10">
+      <div className="min-h-100 flex flex-col items-center justify-center text-center p-6 bg-white rounded-2xl shadow-md border border-gray-100 max-w-md mx-auto mt-10">
         <div className="w-16 h-16 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center mb-4">
           <Trophy size={32} />
         </div>

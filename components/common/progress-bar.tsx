@@ -9,9 +9,7 @@ const ProgressBar = ({
 }) => {
   return (
     <div
-      className={`relative h-2 flex-1 translate-y-[1.5px] pointer-events-none ${
-        isFull ? "max-w-full" : "max-w-[70%]"
-      }`}
+      className={`relative h-2 flex-1 translate-y-[1.5px] pointer-events-none `}
     >
       <div className="absolute inset-0 bg-slate-200/80 dark:bg-stone-700 rounded-full"></div>
       <div
