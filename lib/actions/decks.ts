@@ -28,6 +28,14 @@ export const getDeck = async (deckId: string) => {
   return db.find((deck) => deckId === deck.id);
 };
 
+export const getCard = async (cardId: string, deckId: string) => {
+  const db = getDb();
+  const deck = db.find((deck) => deckId === deck.id);
+  if (!deck) return null;
+  // If "all", bypass the filter completely; otherwise, match the status
+  return deck.cards.find((card) => cardId === card.id);
+};
+
 export const resetDecks = async () => {
   setDb([...MOCK_DECKS]);
   revalidatePath("/dashboard");
