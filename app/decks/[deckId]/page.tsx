@@ -20,7 +20,7 @@ const DeckPage = async ({ params }: Props) => {
   return (
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25">
       <div className="flex items-center justify-between mb-4">
-        <BackButton />
+        <BackButton fallbackUrl="/dashboard" />
       </div>{" "}
       <div className="flex flex-col items-center text-center max-w-md mx-auto mt-4 mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">

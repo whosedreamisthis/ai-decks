@@ -14,6 +14,7 @@ const CardPage = async ({ params }: Props) => {
   const deck = await getDeckById(deckId);
 
   if (!deck) return <div>Deck not found</div>;
+  const deckUrl = `/decks/${deckId}`;
 
   const currentCardIndex = deck.cards.findIndex((c) => c.id === cardId);
   const currentCard = deck.cards[currentCardIndex];
@@ -36,7 +37,7 @@ const CardPage = async ({ params }: Props) => {
 
   return (
     <div className="min-h-screen bg-brand-blue/10 overflow-hidden p-5 pb-25 ">
-      <BackButton />
+      <BackButton fallbackUrl={deckUrl} />
       <div className="flex justify-center">
         <FlashcardExpanded deckId={deckId} {...currentCard} />
       </div>
