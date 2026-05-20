@@ -1,5 +1,5 @@
 import React from "react";
-import { getDeck } from "@/lib/actions/decks";
+import { getDeckById } from "@/lib/actions/decks";
 import Flashcard from "@/components/flashcards/flashcard";
 import BackButton from "../../../components/common/back-button";
 import { Play } from "lucide-react";
@@ -11,7 +11,7 @@ interface Props {
 
 const DeckPage = async ({ params }: Props) => {
   const { deckId } = await params;
-  const deck = await getDeck(deckId);
+  const deck = await getDeckById(deckId);
 
   if (!deck) {
     return <div>Deck not found</div>;

@@ -24,7 +24,7 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   return db.filter((deck) => filter === "all" || deck.status === filter);
 };
 
-export const getDeck = cache(async (deckId: string) => {
+export const getDeckById = cache(async (deckId: string) => {
   const db = getDb();
   // If "all", bypass the filter completely; otherwise, match the status
   return db.find((deck) => deckId === deck.id);
