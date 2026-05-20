@@ -73,11 +73,24 @@ export const getDeckById = cache(async (deckId: string) => {
 
 export const resetDecks = async () => {
   const db = getDb();
+  const { userId } = await auth();
 
   setDecks([...MOCK_DECKS]);
-  db.studyHistoryLog = [];
-  db.deckProgress = [];
-  db.activeDeckSession = [];
+
+  if (userId) {
+    db.studyHistoryLog = db.studyHistoryLog.filter(
+      (log) => log.userId !== userId,
+    );
+    db.deckProgress = db.deckProgress.filter((p) => p.userId !== userId);
+    db.activeDeckSession = db.activeDeckSession.filter(
+      (s) => s.userId !== userId,
+    );
+  } else {
+    // Fallback for demo mode/no user session if applicable
+    db.studyHistoryLog = [];
+    db.deckProgress = [];
+    db.activeDeckSession = [];
+  }
 
   updateTag("decks");
   console.log("Reset database to clean mock data state.");

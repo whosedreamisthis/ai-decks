@@ -16,13 +16,32 @@ const TopNav = ({ isDemo }: { isDemo: boolean }) => {
     return null;
   }
 
+  const handleReset = async () => {
+    // 1. Clear server-side database (via server action)
+    await resetDecks();
+
+    // 2. Clear client-side persistence
+    // This finds all keys starting with our prefixes and nukes them
+    Object.keys(localStorage).forEach((key) => {
+      if (
+        key.startsWith("study_session_") ||
+        key.startsWith("deck_best_score_")
+      ) {
+        localStorage.removeItem(key);
+      }
+    });
+
+    // 3. Force a full page refresh to sync UI state
+    window.location.reload();
+  };
+
   return (
     <div className="sticky top-0 bg-white z-50">
       <div className=" bg-white flex  items-center justify-between px-5 py-2">
         <Link href="/dashboard">
           <Logo />
         </Link>
-        <Button onClick={() => resetDecks()}>Reset Decks</Button>
+        <Button onClick={handleReset}>Reset</Button>
         <div className="flex items-center">
           {isDemo ? <DemoProfile /> : <UserProfile />}
         </div>
