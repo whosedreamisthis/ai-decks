@@ -25,7 +25,7 @@ export default function DeckCardProgressBar({
         const { percentage } = JSON.parse(savedActiveSession);
         setProgressPercentage(percentage || 0);
         setLabel("In Progress");
-        if (percentage > 0) return; // Prioritize showing active session location
+        // if (percentage > 0) return; // Prioritize showing active session location
       } catch (e) {
         console.error("Error reading current active session state", e);
       }
