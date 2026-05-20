@@ -11,7 +11,7 @@ interface DeckCardProgressBarProps {
 export default function DeckCardProgressBar({
   deckId,
 }: DeckCardProgressBarProps) {
-  const [scorePercentage, setScorePercentage] = useState<number>(0);
+  const [scorePercentage, setScorePercentage] = useState<number | null>(null);
   const [progressPercentage, setProgressPercentage] = useState<number>(0);
   const [label, setLabel] = useState<string>("Best Score");
 
@@ -32,11 +32,11 @@ export default function DeckCardProgressBar({
     }
 
     // 2. If no active session, fall back to showing their permanent best score record
-    if (savedBestScore) {
+    if (savedBestScore !== null) {
       const bestScoreNum = parseInt(savedBestScore, 10);
       setScorePercentage(isNaN(bestScoreNum) ? 0 : bestScoreNum);
     } else {
-      setScorePercentage(0);
+      setScorePercentage(null);
     }
     setLabel("Best Score");
   }, [deckId]);
@@ -44,7 +44,7 @@ export default function DeckCardProgressBar({
   return (
     <div className="flex flex-col items-end justify-end gap-0.5 flex-1 max-w-27.5">
       <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider block leading-none">
-        {label} ({scorePercentage}%)
+        {label} ({scorePercentage !== null ? `${scorePercentage}%` : "New"})
       </p>
       <div className="w-full pt-0.5">
         <ProgressBar percentage={progressPercentage} isFull={false} />

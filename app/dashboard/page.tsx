@@ -21,23 +21,28 @@ const DashboardPage = async () => {
     0,
   );
 
-  const allUserHistory = (db.studyHistoryLog || []).filter(
+  const userProgress = (db.deckProgress || []).filter(
     (p) => p.userId === userId,
   );
 
-  const totalCorrect = allUserHistory.reduce(
-    (acc, log) => acc + (log.score || 0),
-    0,
-  );
+  let totalWeightedScore = 0;
+  let totalCardsInStudiedDecks = 0;
 
-  const totalAttempted = allUserHistory.reduce(
-    (acc, log) => acc + (log.totalCards || 0),
-    0,
-  );
+  userProgress.forEach((p) => {
+    // Only count progress for decks that still exist and are active
+    const deck = activeDecks.find((d) => d.id === p.deckId);
+    if (deck) {
+      const cardsCount = deck.cards?.length || 0;
+      totalWeightedScore += (p.highestAccuracy / 100) * cardsCount;
+      totalCardsInStudiedDecks += cardsCount;
+    }
+  });
 
   const activeDecksCount = activeDecks.length;
   const computedProficiency =
-    totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+    totalCardsInStudiedDecks > 0
+      ? Math.round((totalWeightedScore / totalCardsInStudiedDecks) * 100)
+      : 0;
 
   const overallProficiency = `${computedProficiency}%`;
 
