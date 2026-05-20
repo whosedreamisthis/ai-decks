@@ -1,9 +1,10 @@
+// @/components/flashcards/study-session.tsx
 "use client";
 
 import React from "react";
 import FlashcardStudy from "@/components/flashcards/flashcard-study";
 import { Deck } from "@/lib/types";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight as ChevronDivider } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import ProgressBar from "@/components/common/progress-bar";
@@ -35,26 +36,49 @@ const StudySession = ({
   return (
     <div>
       <div className="flex flex-col gap-3 m-5 justify-center">
-        {/* Navigation Back Action */}
-        <div className="flex items-center justify-start">
+        {/* NEW: GLOBAL TOP NAVIGATION HEADER (Breadcrumbs + Escape Hatch) */}
+        <div className="w-full max-w-xl mx-auto mb-4 flex items-center justify-between text-xs sm:text-sm bg-white/60 backdrop-blur-sm py-2.5 px-4 rounded-lg border border-slate-200/50 shadow-sm">
+          {/* Dynamic Breadcrumb Paths */}
+          <div className="flex items-center gap-1.5 text-muted-foreground font-medium">
+            <Link
+              href="/dashboard"
+              className="hover:text-slate-900 transition-colors"
+            >
+              Home
+            </Link>
+            <ChevronDivider size={14} className="text-slate-300" />
+
+            {/* Direct, clean bridge back to the full catalog shelf */}
+            <Link
+              href="/decks"
+              className="hover:text-slate-900 transition-colors text-brand-purple font-semibold"
+            >
+              Decks
+            </Link>
+          </div>
+
+          {/* Clean explicit escape action */}
+          <Link
+            href={`/decks/${deck.id}`}
+            className="text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-red-500 transition-colors"
+          >
+            Exit Session
+          </Link>
+        </div>
+
+        {/* Action Controls Panel: Relocated "Previous Card" trigger above the title layout */}
+        <div className="w-full max-w-xl mx-auto flex items-center justify-start -mt-2">
           <Button
             variant="ghost"
-            className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
+            className="flex items-center gap-1 px-2 text-muted-foreground hover:text-slate-800 transition-colors text-xs font-medium h-auto pt-1 disabled:opacity-30"
             onClick={handlePreviousCard}
             disabled={currentIndex === 0}
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={14} />
             <span>Previous Card</span>
           </Button>
-          <Link
-            href={`/decks/${deck.id}`}
-            className="flex items-center justify-start gap-2 px-2 text-muted-foreground py-4 transition-colors text-sm w-fit disabled:opacity-30"
-            replace
-          >
-            <ChevronLeft size={20} />
-            <span>Back To Deck</span>
-          </Link>
         </div>
+
         <h1 className="text-center text-xl font-bold">{deck.title}</h1>
 
         {/* Display Current Flashcard Context */}
