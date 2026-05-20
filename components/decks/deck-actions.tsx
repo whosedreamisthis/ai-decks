@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiArchive } from "react-icons/fi";
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { archiveDeck, unarchiveDeck, deleteDeck } from "@/lib/actions/decks";
+import DeleteConfirmationModal from "@/components/decks/delete-confirmation-modal";
 
 const DeckActions = ({
   deckId,
@@ -21,6 +22,9 @@ const DeckActions = ({
   deckId: string;
   status: "active" | "archived";
 }) => {
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+
   const handleArchiveDeck = async () => {
     await archiveDeck(deckId);
   };
@@ -31,6 +35,7 @@ const DeckActions = ({
 
   const handleDeleteDeck = async () => {
     await deleteDeck(deckId);
+    setIsDeleteConfirmationOpen(false);
   };
 
   return (
@@ -66,7 +71,9 @@ const DeckActions = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-600 cursor-pointer"
-              onSelect={handleDeleteDeck}
+              onSelect={() => {
+                setIsDeleteConfirmationOpen(true);
+              }}
             >
               <FaRegTrashAlt />
               <span>Delete</span>
@@ -74,6 +81,14 @@ const DeckActions = ({
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteConfirmationOpen}
+        onClose={() => {
+          setIsDeleteConfirmationOpen(false);
+        }}
+        onDelete={handleDeleteDeck}
+      />
     </div>
   );
 };
