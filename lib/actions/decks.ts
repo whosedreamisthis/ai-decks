@@ -3,10 +3,11 @@
 import { updateTag } from "next/cache";
 import { cache } from "react";
 import { getDb, setDecks } from "@/lib/db";
-import { MOCK_DECKS } from "@/lib/mock-data";
+import { MOCK_DECKS, EXAMPLE_DECK } from "@/lib/mock-data";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { cookies } from "next/headers";
 
 interface RawGeneratedCard {
   question: string;
@@ -48,6 +49,10 @@ export async function createAiDeckAction(
 }
 
 export const getDecks = async (filter: "active" | "archived" | "all") => {
+  const { userId } = await auth();
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
   // 1. Wrap the raw database retrieval in Next.js's data cache wrapper
   const getCachedDecks = unstable_cache(
     async () => {
@@ -61,8 +66,46 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   // 2. Fetch the cached array
   const decks = await getCachedDecks();
 
-  // 3. Apply your client-facing filtering logic on the cached data
-  return decks.filter((deck) => filter === "all" || deck.status === filter);
+  // 3. Filter for the current user
+  let userDecks = decks.filter(
+    (deck) => !deck.userId || (userId && deck.userId === userId),
+  );
+
+  // 4. Handle default decks logic
+  if (isDemo) {
+    // Demo user sees all mock decks (which have no userId in MOCK_DECKS)
+    userDecks = userDecks.filter((deck) => !deck.userId);
+  } else if (userId) {
+    // Regular user:
+    // Filter to only show their own decks first
+    userDecks = userDecks.filter((deck) => deck.userId === userId);
+
+    // If they have no decks at all, they get the example deck
+    if (userDecks.length === 0) {
+      const db = getDb();
+      // Check if it already exists in the master database to prevent duplicates
+      const alreadyExists = db.decks.some(
+        (d) => d.id === EXAMPLE_DECK.id && d.userId === userId,
+      );
+
+      if (!alreadyExists) {
+        const initialDeck = { ...EXAMPLE_DECK, userId };
+        db.decks.push(initialDeck);
+        userDecks = [initialDeck];
+      } else {
+        // If it exists in master but wasn't in our filtered/cached view for some reason,
+        // grab it from master now.
+        userDecks = db.decks.filter(
+          (d) => d.id === EXAMPLE_DECK.id && d.userId === userId,
+        );
+      }
+      // Note: We don't call updateTag("decks") here because this function
+      // is often called during render, and revalidation is unsupported there.
+    }
+  }
+
+  // 5. Apply your client-facing filtering logic on the cached data
+  return userDecks.filter((deck) => filter === "all" || deck.status === filter);
 };
 
 export const getDeckById = cache(async (deckId: string) => {
@@ -74,10 +117,20 @@ export const getDeckById = cache(async (deckId: string) => {
 export const resetDecks = async () => {
   const db = getDb();
   const { userId } = await auth();
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
-  setDecks([...MOCK_DECKS]);
+  if (isDemo) {
+    // Reset to full mock decks for demo user
+    setDecks([...MOCK_DECKS]);
+    db.studyHistoryLog = [];
+    db.deckProgress = [];
+    db.activeDeckSession = [];
+  } else if (userId) {
+    // Remove user's decks
+    setDecks(db.decks.filter((deck) => deck.userId !== userId));
 
-  if (userId) {
+    // Clear user history
     db.studyHistoryLog = db.studyHistoryLog.filter(
       (log) => log.userId !== userId,
     );
@@ -85,11 +138,6 @@ export const resetDecks = async () => {
     db.activeDeckSession = db.activeDeckSession.filter(
       (s) => s.userId !== userId,
     );
-  } else {
-    // Fallback for demo mode/no user session if applicable
-    db.studyHistoryLog = [];
-    db.deckProgress = [];
-    db.activeDeckSession = [];
   }
 
   updateTag("decks");

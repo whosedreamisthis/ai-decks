@@ -24,7 +24,8 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
       if (savedActiveSession) {
         try {
           const { percentage } = JSON.parse(savedActiveSession);
-          return percentage > 0;
+          // Show decks with some progress, or if percentage is exactly 0 but it's been initialized
+          return percentage >= 0;
         } catch (error) {
           return false;
         }
@@ -32,7 +33,13 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
       return false;
     });
 
-    setCurrentDecks(filtered);
+    // If no decks have active sessions, show the most recent decks (up to 2)
+    // so new users don't see an empty "Current Decks" section
+    if (filtered.length === 0 && decks.length > 0) {
+      setCurrentDecks(decks.slice(0, 2));
+    } else {
+      setCurrentDecks(filtered);
+    }
   }, [decks]);
 
   if (!isMounted) {

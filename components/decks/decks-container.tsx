@@ -35,18 +35,22 @@ const DecksContainer = ({ active, archived }: Props) => {
                 <DeckList decks={active} />
               ) : (
                 <>
-                  <p className="text-center text-sm mt-20">
-                    There are no active decks.
-                  </p>
+                  <div className="flex-1 flex flex-col items-center justify-center min-h-35 text-center border-2 border-dashed border-slate-100 dark:border-slate-700/60 rounded-xl p-4">
+                    <p className="text-sm text-muted-foreground dark:text-slate-400 max-w-xs">
+                      There are no active decks.
+                    </p>
+                  </div>
                 </>
               )
             ) : archived.length > 0 ? (
               <DeckList decks={archived} />
             ) : (
               <>
-                <p className="text-center text-sm mt-20">
-                  There are no archived decks.
-                </p>
+                <div className="flex-1 flex flex-col items-center justify-center min-h-35 text-center border-2 border-dashed border-slate-100 dark:border-slate-700/60 rounded-xl p-4">
+                  <p className="text-sm text-muted-foreground dark:text-slate-400 max-w-xs">
+                    There are no archived decks.
+                  </p>
+                </div>
               </>
             )}
           </motion.div>

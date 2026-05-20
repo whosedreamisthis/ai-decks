@@ -651,3 +651,62 @@ export const MOCK_DECKS: Deck[] = [
     ],
   },
 ];
+
+export const EXAMPLE_DECK: Deck = {
+  id: "example-deck",
+  title: "Fun Trivia & General Knowledge",
+  progress: 0,
+  status: "active",
+  cards: [
+    {
+      id: "ex-1",
+      question: "Which planet is known as the 'Red Planet'?",
+      answer: "Mars",
+    },
+    {
+      id: "ex-2",
+      question: "What is the capital city of France?",
+      answer: "Paris",
+    },
+    {
+      id: "ex-3",
+      question: "How many continents are there on Earth?",
+      answer: "Seven (7)",
+    },
+    {
+      id: "ex-4",
+      question: "What is the largest mammal in the world?",
+      answer: "The Blue Whale",
+    },
+    {
+      id: "ex-5",
+      question: "In which year did the Titanic sink?",
+      answer: "1912",
+    },
+    {
+      id: "ex-6",
+      question: "What is the hardest natural substance on Earth?",
+      answer: "Diamond",
+    },
+    {
+      id: "ex-7",
+      question: "Which artist painted the 'Mona Lisa'?",
+      answer: "Leonardo da Vinci",
+    },
+    {
+      id: "ex-8",
+      question: "What is the chemical symbol for gold?",
+      answer: "Au",
+    },
+    {
+      id: "ex-9",
+      question: "Which ocean is the largest on Earth?",
+      answer: "The Pacific Ocean",
+    },
+    {
+      id: "ex-10",
+      question: "Who wrote the play 'Romeo and Juliet'?",
+      answer: "William Shakespeare",
+    },
+  ],
+};
