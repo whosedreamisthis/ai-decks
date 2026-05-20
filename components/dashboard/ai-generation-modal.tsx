@@ -16,6 +16,8 @@ export default function AIGenerationModal({
   onClose,
 }: AIGenerationModalProps) {
   const [input, setInput] = useState("");
+  /* ADDED: Local state to track selected count limit */
+  const [cardCount, setCardCount] = useState("10");
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
 
@@ -37,8 +39,8 @@ export default function AIGenerationModal({
     setIsLoading(true);
     setErrorStatus(null);
 
-    // Tight instruction telling Gemini exactly what concept framework to extract
-    const prompt = `Create a 10 card deck focusing on key foundational concepts of: ${input}`;
+    /* UPDATED: Dynamic instruction injects the chosen count directly into the LLM system prompt */
+    const prompt = `Create a ${cardCount} card deck focusing on key foundational concepts of: ${input}`;
 
     try {
       // 1. Get the structured array string back from your local route handler bridge
@@ -73,6 +75,7 @@ export default function AIGenerationModal({
 
   const handleCloseWrapper = () => {
     setInput("");
+    setCardCount("10"); // Reset back to default standard count
     setErrorStatus(null);
     setIsLoading(false);
     onClose();
@@ -108,6 +111,7 @@ export default function AIGenerationModal({
 
         <div className="p-6 flex flex-col gap-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+            {/* Input Target Topic Selection */}
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="topic"
@@ -126,6 +130,28 @@ export default function AIGenerationModal({
                 autoFocus
                 required
               />
+            </div>
+
+            {/* ADDED: Dynamic Deck Size Selector Dropdown Box */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="cardCount"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Number of cards
+              </label>
+              <select
+                id="cardCount"
+                value={cardCount}
+                onChange={(e) => setCardCount(e.target.value)}
+                className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-brand-purple text-slate-800 text-sm shadow-sm cursor-pointer"
+                disabled={isLoading}
+              >
+                <option value="5">5 Cards (Quick Review)</option>
+                <option value="10">10 Cards (Standard Session)</option>
+                <option value="15">15 Cards (Detailed Study)</option>
+                <option value="20">20 Cards (Deep Dive)</option>
+              </select>
             </div>
 
             {errorStatus && (
