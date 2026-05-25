@@ -2,6 +2,8 @@ import React from "react";
 import { getDeckById } from "@/lib/actions/decks";
 import StudySessionEngine from "@/components/study/study-session-engine";
 
+export const dynamic = "force-dynamic";
+
 const StudyPage = async ({
   params,
 }: {

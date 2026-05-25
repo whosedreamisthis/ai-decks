@@ -26,36 +26,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // const result = {
-    //   text: JSON.stringify([
-    //     {
-    //       question: "What is Next.js?",
-    //       answer: "A React framework for the web.",
-    //     },
-    //     {
-    //       question: "What is Gemini?",
-    //       answer: "A family of multimodal AI models by Google.",
-    //     },
-    //   ]),
-    // };
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: message,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              question: { type: Type.STRING },
-              answer: { type: Type.STRING },
-            },
-            required: ["question", "answer"],
-          },
+    const result = {
+      text: JSON.stringify([
+        {
+          question: "What is Next.js?",
+          answer: "A React framework for the web.",
         },
-      },
-    });
+        {
+          question: "What is Gemini?",
+          answer: "A family of multimodal AI models by Google.",
+        },
+      ]),
+    };
+    // const result = await ai.models.generateContent({
+    //   model: "gemini-2.5-flash",
+    //   contents: message,
+    //   config: {
+    //     responseMimeType: "application/json",
+    //     responseSchema: {
+    //       type: Type.ARRAY,
+    //       items: {
+    //         type: Type.OBJECT,
+    //         properties: {
+    //           question: { type: Type.STRING },
+    //           answer: { type: Type.STRING },
+    //         },
+    //         required: ["question", "answer"],
+    //       },
+    //     },
+    //   },
+    // });
 
     console.log("Gemini API Full Result:", JSON.stringify(result, null, 2));
 
