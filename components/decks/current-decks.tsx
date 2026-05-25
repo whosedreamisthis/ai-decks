@@ -63,7 +63,7 @@ const CurrentDecks = ({ decks }: CurrentDecksProps) => {
 
       {currentDecks.length > 0 ? (
         <div className="flex-1 overflow-y-auto min-h-0">
-          <DeckList decks={currentDecks} />
+          <DeckList decks={currentDecks} current={true} />
         </div>
       ) : (
         /* FIXED: Lightened the inner empty dashboard slot dashed border structure to dark:border-slate-700/60 */
