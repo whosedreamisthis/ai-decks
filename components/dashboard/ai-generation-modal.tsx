@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createAiDeckAction } from "@/lib/actions/decks";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 interface AIGenerationModalProps {
   isOpen: boolean;
@@ -75,6 +76,9 @@ export default function AIGenerationModal({
       await createAiDeckAction(input, generatedCards);
       handleCloseWrapper();
     } catch (error: any) {
+      if (isRedirectError(error)) {
+        throw error;
+      }
       console.error(error);
       setErrorStatus(
         error.message || "An unexpected generation error occurred.",
