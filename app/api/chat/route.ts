@@ -27,38 +27,38 @@ export async function POST(request: Request) {
     }
 
     // MOCK RESPONSE ENGINE FOR LOCAL TESTING
-    const result = {
-      text: JSON.stringify([
-        {
-          question: "What is Next.js?",
-          answer: "A React framework for the web.",
-        },
-        {
-          question: "What is Gemini?",
-          answer: "A family of multimodal AI models by Google.",
-        },
-      ]),
-    } as any; // Cast as any prevents TypeScript compiler build errors on line 66
+    // const result = {
+    //   text: JSON.stringify([
+    //     {
+    //       question: "What is Next.js?",
+    //       answer: "A React framework for the web.",
+    //     },
+    //     {
+    //       question: "What is Gemini?",
+    //       answer: "A family of multimodal AI models by Google.",
+    //     },
+    //   ]),
+    // } as any; // Cast as any prevents TypeScript compiler build errors on line 66
 
     // REAL LIVE GEMINI ENGINE
-    // const result = await ai.models.generateContent({
-    //   model: "gemini-2.5-flash",
-    //   contents: message,
-    //   config: {
-    //     responseMimeType: "application/json",
-    //     responseSchema: {
-    //       type: Type.ARRAY,
-    //       items: {
-    //         type: Type.OBJECT,
-    //         properties: {
-    //           question: { type: Type.STRING },
-    //           answer: { type: Type.STRING },
-    //         },
-    //         required: ["question", "answer"],
-    //       },
-    //     },
-    //   },
-    // });
+    const result = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: message,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              question: { type: Type.STRING },
+              answer: { type: Type.STRING },
+            },
+            required: ["question", "answer"],
+          },
+        },
+      },
+    });
 
     console.log("Gemini API Full Result:", JSON.stringify(result, null, 2));
 
