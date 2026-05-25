@@ -78,7 +78,7 @@ export async function createAiDeckAction(
 }
 
 export const getDecks = async (filter: "active" | "archived" | "all") => {
-  let userId;
+  let userId: string | null = null;
   try {
     const authResult = await auth();
     userId = authResult.userId;
