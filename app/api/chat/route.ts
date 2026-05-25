@@ -37,6 +37,39 @@ export async function POST(request: Request) {
     //       question: "What is Gemini?",
     //       answer: "A family of multimodal AI models by Google.",
     //     },
+    //     {
+    //       question: "What is TypeScript?",
+    //       answer:
+    //         "A strongly typed programming language that builds on JavaScript.",
+    //     },
+    //     {
+    //       question: "What is Tailwind CSS?",
+    //       answer: "A utility-first CSS framework for rapid UI development.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
+    //     {
+    //       question: "What is React?",
+    //       answer: "A JavaScript library for building user interfaces.",
+    //     },
     //   ]),
     // } as any; // Cast as any prevents TypeScript compiler build errors on line 66
 

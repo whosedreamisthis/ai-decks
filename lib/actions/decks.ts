@@ -16,19 +16,18 @@ interface RawGeneratedCard {
 }
 
 // Safely cast revalidateTag to bypass strict TypeScript compiler signature overloads
-const clearDeckCache = revalidateTag as (tag: string) => void;
 
 export async function createAiDeckAction(
   title: string,
   cards: RawGeneratedCard[],
 ) {
-  console.log("createAiDeckAction started", { title, cardCount: cards.length });
+  console.log("createAiDeckAction started", { title });
   let userId;
   try {
     const authResult = await auth();
     userId = authResult.userId;
   } catch (e) {
-    console.log("Auth failed, likely in demo mode:", e);
+    // Silent catch for auth check in demo mode
   }
 
   const cookieStore = await cookies();
@@ -58,7 +57,11 @@ export async function createAiDeckAction(
   };
 
   if (isDemo) {
-    // Save custom generated decks directly into cookies for production permanence
+    // 1. SAVE TO IN-MEMORY DB (Immediate session persistence)
+    const db = getDb();
+    db.decks.push(newDeck);
+
+    // 2. SAVE TO COOKIES (Best-effort persistence across restarts)
     const existingDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
     const existingDemoDecks = existingDemoDecksRaw
       ? JSON.parse(existingDemoDecksRaw)
@@ -72,19 +75,36 @@ export async function createAiDeckAction(
 
     existingDemoDecks.push(cookiePayloadDeck);
 
-    cookieStore.set("custom_demo_decks", JSON.stringify(existingDemoDecks), {
-      path: "/",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24, // 24 Hours
-    });
+    const serializedDecks = JSON.stringify(existingDemoDecks);
+    // console.log("Cookie size estimate:", serializedDecks.length, "bytes");
+
+    if (serializedDecks.length > 4000) {
+      console.warn(
+        "Cookie size exceeding 4KB limit! This deck may not persist across server restarts.",
+      );
+    }
+
+    try {
+      cookieStore.set("custom_demo_decks", serializedDecks, {
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24, // 24 Hours
+      });
+      // console.log("Successfully set custom_demo_decks cookie");
+    } catch (cookieError) {
+      console.error(
+        "Failed to set custom_demo_decks cookie (likely size limit):",
+        cookieError,
+      );
+    }
   } else {
     // Authenticated path for persistent database storage layouts
     const db = getDb();
     db.decks.push(newDeck); // <-- This will now compile with no type mismatch errors!
   }
 
-  clearDeckCache("decks");
+  revalidateTag("decks", "max");
   redirect(`/decks/${newDeckId}`);
 }
 
@@ -100,16 +120,8 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   const cookieStore = await cookies();
   const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
-  const getCachedDecks = unstable_cache(
-    async () => {
-      const db = getDb();
-      return db.decks || [];
-    },
-    ["decks-storage-key"],
-    { tags: ["decks"] },
-  );
-
-  let masterDecks = await getCachedDecks();
+  const db = getDb();
+  let masterDecks = db.decks || [];
 
   // Inject any browser-cookie saved AI decks into the layout pool if in demo mode
   if (isDemo) {
@@ -120,7 +132,14 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
           ...deck,
           createdAt: new Date(deck.createdAt), // Re-hydrate the string back into a Date instance object
         }));
-        masterDecks = [...masterDecks, ...customDecks];
+
+        // Merge without duplicates (favoring DB version if already present)
+        const dbDeckIds = new Set(masterDecks.map((d) => d.id));
+        const uniqueCustomDecks = customDecks.filter(
+          (d: any) => !dbDeckIds.has(d.id),
+        );
+
+        masterDecks = [...masterDecks, ...uniqueCustomDecks];
       } catch (e) {
         console.error("Failed to parse custom demo decks:", e);
       }
@@ -157,10 +176,65 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
   return userDecks.filter((deck) => filter === "all" || deck.status === filter);
 };
 
-// Fixed to always read directly from the unified cookie/cache array
 export const getDeckById = async (deckId: string) => {
-  const decks = await getDecks("all");
-  return decks.find((deck) => deck.id === deckId);
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  let userId: string | null = null;
+  try {
+    // Only call auth() if we're not explicitly in demo mode or if we need to check ownership
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    if (!isDemo) {
+      console.log("Auth failed in getDeckById");
+    }
+  }
+
+  const db = getDb();
+  let masterDecks = db.decks || [];
+
+  if (isDemo) {
+    const customDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    if (customDemoDecksRaw) {
+      try {
+        const customDecks = JSON.parse(customDemoDecksRaw).map((deck: any) => ({
+          ...deck,
+          createdAt: new Date(deck.createdAt),
+        }));
+
+        // Merge without duplicates (favoring DB version if already present)
+        const dbDeckIds = new Set(masterDecks.map((d) => d.id));
+        const uniqueCustomDecks = customDecks.filter(
+          (d: any) => !dbDeckIds.has(d.id),
+        );
+
+        masterDecks = [...masterDecks, ...uniqueCustomDecks];
+      } catch (e) {
+        console.error("Failed to parse custom demo decks in getDeckById:", e);
+      }
+    }
+  }
+
+  const deck = masterDecks.find((d) => d.id === deckId);
+
+  if (!deck) {
+    return null;
+  }
+
+  // Security check: ensure the user owns the deck or it's a demo deck in demo mode
+  if (isDemo) {
+    // In demo mode, we allow access to any deck that is marked as a demo deck OR has no owner
+    if (!deck.userId || deck.isDemoDeck) return deck;
+
+    // If the deck HAS a userId and we are in demo mode, we only allow it if it's explicitly a demo deck
+    // This handles the case where a user logs out but their demo cookie persists
+    if (deck.isDemoDeck) return deck;
+  } else if (userId) {
+    if (deck.userId === userId) return deck;
+  }
+
+  return null;
 };
 
 export const resetDecks = async () => {
@@ -186,7 +260,7 @@ export const resetDecks = async () => {
     );
   }
 
-  clearDeckCache("decks");
+  revalidateTag("decks", "max");
   console.log("Reset database state completely.");
 };
 
@@ -210,7 +284,7 @@ export const archiveDeck = async (deckId: string) => {
       db.decks.map((d) => (d.id === deckId ? { ...d, status: "archived" } : d)),
     );
   }
-  clearDeckCache("decks");
+  revalidateTag("decks", "max");
 };
 
 export const unarchiveDeck = async (deckId: string) => {
@@ -233,7 +307,7 @@ export const unarchiveDeck = async (deckId: string) => {
       db.decks.map((d) => (d.id === deckId ? { ...d, status: "active" } : d)),
     );
   }
-  clearDeckCache("decks");
+  revalidateTag("decks", "max");
 };
 
 export const deleteDeck = async (deckId: string) => {
@@ -264,5 +338,5 @@ export const deleteDeck = async (deckId: string) => {
     }
   }
 
-  clearDeckCache("decks");
+  revalidateTag("decks", "max");
 };

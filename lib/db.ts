@@ -39,12 +39,22 @@ declare global {
 }
 
 // 2. Helper to instantiate the baseline mock state
-const createInitialMockDb = (): MockDatabase => ({
-  decks: JSON.parse(JSON.stringify(MOCK_DECKS)),
-  studyHistoryLog: [],
-  deckProgress: [],
-  activeDeckSession: [],
-});
+const createInitialMockDb = (): MockDatabase => {
+  const isBrowser = typeof window !== "undefined";
+  let persistedDecks = [];
+
+  if (!isBrowser) {
+    // We are on the server. We don't have localStorage here,
+    // but the globalThis._db will persist across requests in the same container.
+  }
+
+  return {
+    decks: [...JSON.parse(JSON.stringify(MOCK_DECKS))],
+    studyHistoryLog: [],
+    deckProgress: [],
+    activeDeckSession: [],
+  };
+};
 
 // Initialize right away on module load
 if (!globalThis._db) {
