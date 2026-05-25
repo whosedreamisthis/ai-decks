@@ -15,27 +15,41 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await ai.models.generateContent({
+    if (!process.env.GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY is missing from environment variables");
+      return NextResponse.json(
+        {
+          error: "AI Service Configuration Error",
+          details: "API Key is missing",
+        },
+        { status: 500 },
+      );
+    }
+
+    // const result = {
+    //   text: JSON.stringify([
+    //     {
+    //       question: "What is Next.js?",
+    //       answer: "A React framework for the web.",
+    //     },
+    //     {
+    //       question: "What is Gemini?",
+    //       answer: "A family of multimodal AI models by Google.",
+    //     },
+    //   ]),
+    // };
+    const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: message,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
-          description:
-            "A list of flashcards generated for the user's requested topic.",
           items: {
             type: Type.OBJECT,
             properties: {
-              // ALIGNED WITH YOUR TYPES
-              question: {
-                type: Type.STRING,
-                description: "The core prompt or question for the card.",
-              },
-              answer: {
-                type: Type.STRING,
-                description: "The clear, accurate answer or explanation.",
-              },
+              question: { type: Type.STRING },
+              answer: { type: Type.STRING },
             },
             required: ["question", "answer"],
           },
@@ -43,11 +57,41 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ jsonString: response.text });
-  } catch (error) {
+    console.log("Gemini API Full Result:", JSON.stringify(result, null, 2));
+
+    let cleanJson = "";
+    if (result.text) {
+      cleanJson = result.text;
+    } else if (
+      result.candidates &&
+      result.candidates[0]?.content?.parts?.[0]?.text
+    ) {
+      cleanJson = result.candidates[0].content.parts[0].text;
+    } else {
+      console.error("Gemini response missing text:", result);
+      throw new Error("No text content returned from Gemini");
+    }
+
+    if (cleanJson.includes("```")) {
+      cleanJson = cleanJson.replace(/```json\n?|```/g, "").trim();
+    }
+
+    console.log("Gemini Cleaned Response:", cleanJson);
+
+    return NextResponse.json({ jsonString: cleanJson });
+  } catch (error: any) {
     console.error("Gemini Generation Error:", error);
+
+    // Log more detail if available
+    if (error.response) {
+      console.error("Gemini Error Response:", error.response);
+    }
+
     return NextResponse.json(
-      { error: "Failed to generate deck structure" },
+      {
+        error: "Failed to generate deck structure",
+        details: error.message || "Unknown error",
+      },
       { status: 500 },
     );
   }

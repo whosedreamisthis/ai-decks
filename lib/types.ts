@@ -13,6 +13,7 @@ export interface Deck {
   status: "active" | "archived";
   cards: Card[]; // Array containing the actual card objects
   createdAt?: Date;
+  isDemoDeck?: boolean;
 }
 
 export interface ResultsSummaryData {

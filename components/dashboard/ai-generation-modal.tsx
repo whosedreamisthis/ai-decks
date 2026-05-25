@@ -47,9 +47,26 @@ export default function AIGenerationModal({
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Generation failed");
+      if (!res.ok) {
+        console.error("API Error Response:", data);
+        throw new Error(data.error || data.details || "Generation failed");
+      }
 
-      const generatedCards = JSON.parse(data.jsonString);
+      let rawJson = data.jsonString;
+      // Secondary sanitization just in case
+      if (rawJson.includes("```")) {
+        rawJson = rawJson.replace(/```json\n?|```/g, "").trim();
+      }
+
+      let generatedCards;
+      try {
+        generatedCards = JSON.parse(rawJson);
+      } catch (parseError) {
+        console.error("JSON Parse Error:", parseError, "Raw content:", rawJson);
+        throw new Error(
+          "Failed to parse the AI generated content. Please try again.",
+        );
+      }
 
       if (!Array.isArray(generatedCards) || generatedCards.length === 0) {
         throw new Error("Invalid structure returned from generator");

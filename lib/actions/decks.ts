@@ -18,8 +18,27 @@ export async function createAiDeckAction(
   title: string,
   cards: RawGeneratedCard[],
 ) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  console.log("createAiDeckAction started", { title, cardCount: cards.length });
+  let userId;
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    console.log(
+      "Auth failed, likely in demo or dev mode without clerk config:",
+      e,
+    );
+  }
+
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  console.log("Auth state:", { userId, isDemo });
+
+  if (!userId && !isDemo) {
+    console.error("Unauthorized: No userId and not in demo mode");
+    throw new Error("Unauthorized");
+  }
 
   const db = getDb();
   const newDeckId = crypto.randomUUID();
@@ -34,22 +53,38 @@ export async function createAiDeckAction(
   // Matches your exact Deck interface schema structures
   const newDeck = {
     id: newDeckId,
-    userId, // Stored if your database uses multi-tenant indexing records
+    userId: userId || undefined, // Stored if your database uses multi-tenant indexing records
     title: title || "AI Generated Deck",
     progress: 0, // Starts fresh at zero progress
     status: "active" as const,
     cards: formattedCards,
     createdAt: new Date(),
+    isDemoDeck: isDemo, // Explicitly mark it as a demo deck if generated in demo mode
   };
 
+  console.log("Pushing new deck to DB:", newDeckId);
   db.decks.push(newDeck);
 
-  updateTag("decks");
+  console.log("Updating tag and redirecting...");
+  try {
+    updateTag("decks");
+  } catch (e) {
+    console.error("updateTag failed:", e);
+  }
+
+  // Wait a bit to ensure state is flushed if needed,
+  // though typically redirect works fine.
   redirect(`/decks/${newDeckId}`);
 }
 
 export const getDecks = async (filter: "active" | "archived" | "all") => {
-  const { userId } = await auth();
+  let userId;
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    // Ignore auth errors in dev/demo
+  }
   const cookieStore = await cookies();
   const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
@@ -73,8 +108,8 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
 
   // 4. Handle default decks logic
   if (isDemo) {
-    // Demo user sees all mock decks (which have no userId in MOCK_DECKS)
-    userDecks = userDecks.filter((deck) => !deck.userId);
+    // Demo user sees mock decks AND any AI decks they just generated
+    userDecks = userDecks.filter((deck) => !deck.userId || deck.isDemoDeck);
   } else if (userId) {
     // Regular user:
     // Filter to only show their own decks first
