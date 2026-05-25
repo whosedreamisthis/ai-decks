@@ -1,3 +1,4 @@
+// @/lib/actions/decks.ts
 "use server";
 
 import { revalidateTag } from "next/cache";
@@ -14,6 +15,9 @@ interface RawGeneratedCard {
   answer: string;
 }
 
+// Safely cast revalidateTag to bypass strict TypeScript compiler signature overloads
+const clearDeckCache = revalidateTag as (tag: string) => void;
+
 export async function createAiDeckAction(
   title: string,
   cards: RawGeneratedCard[],
@@ -24,56 +28,62 @@ export async function createAiDeckAction(
     const authResult = await auth();
     userId = authResult.userId;
   } catch (e) {
-    console.log(
-      "Auth failed, likely in demo or dev mode without clerk config:",
-      e,
-    );
+    console.log("Auth failed, likely in demo mode:", e);
   }
 
   const cookieStore = await cookies();
   const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
-  console.log("Auth state:", { userId, isDemo });
-
   if (!userId && !isDemo) {
-    console.error("Unauthorized: No userId and not in demo mode");
     throw new Error("Unauthorized");
   }
 
-  const db = getDb();
   const newDeckId = crypto.randomUUID();
-
-  // Format the inner cards to perfectly match your Card interface
   const formattedCards = cards.map((card) => ({
     id: crypto.randomUUID(),
     question: card.question,
     answer: card.answer,
   }));
 
-  // Matches your exact Deck interface schema structures
+  // FIXED: Changed createdAt to a native Date object to perfectly match your database's Deck interface
   const newDeck = {
     id: newDeckId,
-    userId: userId || undefined, // Stored if your database uses multi-tenant indexing records
+    userId: userId || undefined,
     title: title || "AI Generated Deck",
-    progress: 0, // Starts fresh at zero progress
+    progress: 0,
     status: "active" as const,
     cards: formattedCards,
-    createdAt: new Date(),
-    isDemoDeck: isDemo, // Explicitly mark it as a demo deck if generated in demo mode
+    createdAt: new Date(), // <-- Native Date Object
+    isDemoDeck: isDemo,
   };
 
-  console.log("Pushing new deck to DB:", newDeckId);
-  db.decks.push(newDeck);
+  if (isDemo) {
+    // Save custom generated decks directly into cookies for production permanence
+    const existingDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    const existingDemoDecks = existingDemoDecksRaw
+      ? JSON.parse(existingDemoDecksRaw)
+      : [];
 
-  console.log("Updating tag and redirecting...");
-  try {
-    const clearDeckCache = revalidateTag as (tag: string) => void;
-    clearDeckCache("decks");
-  } catch (e) {
-    console.error("updateTag failed:", e);
+    // Stringify the date property specifically for cookie transport payload safety
+    const cookiePayloadDeck = {
+      ...newDeck,
+      createdAt: newDeck.createdAt.toISOString(),
+    };
+
+    existingDemoDecks.push(cookiePayloadDeck);
+
+    cookieStore.set("custom_demo_decks", JSON.stringify(existingDemoDecks), {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24, // 24 Hours
+    });
+  } else {
+    // Authenticated path for persistent database storage layouts
+    const db = getDb();
+    db.decks.push(newDeck); // <-- This will now compile with no type mismatch errors!
   }
 
-  const clearDeckCache = revalidateTag as (tag: string) => void;
   clearDeckCache("decks");
   redirect(`/decks/${newDeckId}`);
 }
@@ -84,42 +94,50 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
     const authResult = await auth();
     userId = authResult.userId;
   } catch (e) {
-    // Ignore auth errors in dev/demo
+    /* Ignore */
   }
+
   const cookieStore = await cookies();
   const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
-  // 1. Wrap the raw database retrieval in Next.js's data cache wrapper
   const getCachedDecks = unstable_cache(
     async () => {
       const db = getDb();
       return db.decks || [];
     },
-    ["decks-storage-key"], // Unique cache identifier string
-    { tags: ["decks"] }, // This links it to your updateTag("decks") calls!
+    ["decks-storage-key"],
+    { tags: ["decks"] },
   );
 
-  // 2. Fetch the cached array
-  const decks = await getCachedDecks();
+  let masterDecks = await getCachedDecks();
 
-  // 3. Filter for the current user
-  let userDecks = decks.filter(
+  // Inject any browser-cookie saved AI decks into the layout pool if in demo mode
+  if (isDemo) {
+    const customDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    if (customDemoDecksRaw) {
+      try {
+        const customDecks = JSON.parse(customDemoDecksRaw).map((deck: any) => ({
+          ...deck,
+          createdAt: new Date(deck.createdAt), // Re-hydrate the string back into a Date instance object
+        }));
+        masterDecks = [...masterDecks, ...customDecks];
+      } catch (e) {
+        console.error("Failed to parse custom demo decks:", e);
+      }
+    }
+  }
+
+  let userDecks = masterDecks.filter(
     (deck) => !deck.userId || (userId && deck.userId === userId),
   );
 
-  // 4. Handle default decks logic
   if (isDemo) {
-    // Demo user sees mock decks AND any AI decks they just generated
     userDecks = userDecks.filter((deck) => !deck.userId || deck.isDemoDeck);
   } else if (userId) {
-    // Regular user:
-    // Filter to only show their own decks first
     userDecks = userDecks.filter((deck) => deck.userId === userId);
 
-    // If they have no decks at all, they get the example deck
     if (userDecks.length === 0) {
       const db = getDb();
-      // Check if it already exists in the master database to prevent duplicates
       const alreadyExists = db.decks.some(
         (d) => d.id === EXAMPLE_DECK.id && d.userId === userId,
       );
@@ -129,8 +147,6 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
         db.decks.push(initialDeck);
         userDecks = [initialDeck];
       } else {
-        // If it exists in master but wasn't in our filtered/cached view for some reason,
-        // grab it from master now.
         userDecks = db.decks.filter(
           (d) => d.id === EXAMPLE_DECK.id && d.userId === userId,
         );
@@ -138,15 +154,14 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
     }
   }
 
-  // 5. Apply your client-facing filtering logic on the cached data
   return userDecks.filter((deck) => filter === "all" || deck.status === filter);
 };
 
-export const getDeckById = cache(async (deckId: string) => {
-  const db = getDb();
-  const decks = db.decks || [];
-  return decks.find((deck) => deckId === deck.id);
-});
+// Fixed to always read directly from the unified cookie/cache array
+export const getDeckById = async (deckId: string) => {
+  const decks = await getDecks("all");
+  return decks.find((deck) => deck.id === deckId);
+};
 
 export const resetDecks = async () => {
   const db = getDb();
@@ -155,16 +170,13 @@ export const resetDecks = async () => {
   const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
   if (isDemo) {
-    // Reset to full mock decks for demo user
+    cookieStore.delete("custom_demo_decks");
     setDecks([...MOCK_DECKS]);
     db.studyHistoryLog = [];
     db.deckProgress = [];
     db.activeDeckSession = [];
   } else if (userId) {
-    // Remove user's decks
     setDecks(db.decks.filter((deck) => deck.userId !== userId));
-
-    // Clear user history
     db.studyHistoryLog = db.studyHistoryLog.filter(
       (log) => log.userId !== userId,
     );
@@ -174,55 +186,83 @@ export const resetDecks = async () => {
     );
   }
 
-  const clearDeckCache = revalidateTag as (tag: string) => void;
   clearDeckCache("decks");
-  console.log("Reset database to clean mock data state.");
+  console.log("Reset database state completely.");
 };
 
-// ... keep rest of archive/delete actions identical, as they use setDecks safely now!
-
 export const archiveDeck = async (deckId: string) => {
-  const db = getDb();
-  setDecks(
-    db.decks.map((deck) =>
-      deck.id === deckId ? { ...deck, status: "archived" } : deck,
-    ),
-  );
-  const clearDeckCache = revalidateTag as (tag: string) => void;
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  if (isDemo) {
+    const customDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    if (customDemoDecksRaw) {
+      const decks = JSON.parse(customDemoDecksRaw).map((d: any) =>
+        d.id === deckId ? { ...d, status: "archived" } : d,
+      );
+      cookieStore.set("custom_demo_decks", JSON.stringify(decks), {
+        path: "/",
+      });
+    }
+  } else {
+    const db = getDb();
+    setDecks(
+      db.decks.map((d) => (d.id === deckId ? { ...d, status: "archived" } : d)),
+    );
+  }
   clearDeckCache("decks");
 };
 
 export const unarchiveDeck = async (deckId: string) => {
-  const db = getDb();
-  setDecks(
-    db.decks.map((deck) =>
-      deck.id === deckId ? { ...deck, status: "active" } : deck,
-    ),
-  );
-  const clearDeckCache = revalidateTag as (tag: string) => void;
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  if (isDemo) {
+    const customDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    if (customDemoDecksRaw) {
+      const decks = JSON.parse(customDemoDecksRaw).map((d: any) =>
+        d.id === deckId ? { ...d, status: "active" } : d,
+      );
+      cookieStore.set("custom_demo_decks", JSON.stringify(decks), {
+        path: "/",
+      });
+    }
+  } else {
+    const db = getDb();
+    setDecks(
+      db.decks.map((d) => (d.id === deckId ? { ...d, status: "active" } : d)),
+    );
+  }
   clearDeckCache("decks");
 };
 
 export const deleteDeck = async (deckId: string) => {
   const db = getDb();
   const { userId } = await auth();
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
 
-  // 1. Remove the deck itself
-  setDecks(db.decks.filter((deck) => deckId !== deck.id));
-
-  // 2. Clean up associated progress and active sessions
-  if (userId) {
-    db.deckProgress = db.deckProgress.filter(
-      (p) => !(p.deckId === deckId && p.userId === userId),
-    );
-    db.activeDeckSession = db.activeDeckSession.filter(
-      (s) => !(s.deckId === deckId && s.userId === userId),
-    );
-    // Note: We might want to keep studyHistoryLog for overall user stats,
-    // or we could delete it too if we want a full wipe.
-    // For now, keeping history to preserve "Overall Proficiency" stats.
+  if (isDemo) {
+    const customDemoDecksRaw = cookieStore.get("custom_demo_decks")?.value;
+    if (customDemoDecksRaw) {
+      const decks = JSON.parse(customDemoDecksRaw).filter(
+        (d: any) => d.id !== deckId,
+      );
+      cookieStore.set("custom_demo_decks", JSON.stringify(decks), {
+        path: "/",
+      });
+    }
+  } else {
+    setDecks(db.decks.filter((deck) => deckId !== deck.id));
+    if (userId) {
+      db.deckProgress = db.deckProgress.filter(
+        (p) => !(p.deckId === deckId && p.userId === userId),
+      );
+      db.activeDeckSession = db.activeDeckSession.filter(
+        (s) => !(s.deckId === deckId && s.userId === userId),
+      );
+    }
   }
 
-  const clearDeckCache = revalidateTag as (tag: string) => void;
   clearDeckCache("decks");
 };

@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // MOCK RESPONSE ENGINE FOR LOCAL TESTING
     const result = {
       text: JSON.stringify([
         {
@@ -37,7 +38,9 @@ export async function POST(request: Request) {
           answer: "A family of multimodal AI models by Google.",
         },
       ]),
-    } as any;
+    } as any; // Cast as any prevents TypeScript compiler build errors on line 66
+
+    // REAL LIVE GEMINI ENGINE
     // const result = await ai.models.generateContent({
     //   model: "gemini-2.5-flash",
     //   contents: message,
@@ -82,7 +85,6 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Gemini Generation Error:", error);
 
-    // Log more detail if available
     if (error.response) {
       console.error("Gemini Error Response:", error.response);
     }

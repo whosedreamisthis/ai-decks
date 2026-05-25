@@ -3,7 +3,8 @@
 
 import { getDb } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 interface FinalizeSessionInput {
   deckId: string;
@@ -13,69 +14,141 @@ interface FinalizeSessionInput {
   history: Record<string, "correct" | "incorrect">;
 }
 
+// Helper to cast revalidateTag safely for Next.js build engines
+const clearCache = revalidateTag as (tag: string) => void;
+
 export async function finalizeStudySessionAction(data: FinalizeSessionInput) {
   const db = await getDb();
 
-  // 1. Authenticate user via Clerk
-  const { userId } = await auth();
-  if (!userId) {
+  let userId: string | null = null;
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    console.log("Auth skipped or failed in demo tracking mode");
+  }
+
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  // Guard clause against unauthenticated live users
+  if (!userId && !isDemo) {
     throw new Error("Unauthorized: You must be logged in to save progress.");
   }
 
   const { deckId, totalAnswered, correctCount, accuracy } = data;
 
   try {
-    // --- TRANSACTION SIMULATION ---
+    if (isDemo) {
+      // --- DEMO USER COOKIE TRANSACTION ENGINE ---
+      const nowString = new Date().toISOString();
 
-    // A) Log this completed attempt into a permanent history log table
-    const newLogItem = {
-      id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      userId,
-      deckId,
-      score: correctCount,
-      totalCards: totalAnswered,
-      accuracyPercentage: accuracy,
-      completedAt: new Date(),
-    };
-    db.studyHistoryLog.push(newLogItem);
-
-    // B) Update or Upsert the cumulative progress record for this deck
-    const existingProgressIndex = db.deckProgress.findIndex(
-      (p) => p.userId === userId && p.deckId === deckId,
-    );
-
-    if (existingProgressIndex > -1) {
-      // Update existing progress record
-      const existing = db.deckProgress[existingProgressIndex];
-      db.deckProgress[existingProgressIndex] = {
-        ...existing,
-        lastStudied: new Date(),
-        highestAccuracy: Math.max(existing.highestAccuracy, accuracy),
-        timesReviewed: existing.timesReviewed + 1,
-      };
-    } else {
-      // Create new progress record (Upsert fallback)
-      db.deckProgress.push({
-        userId,
+      // A) Log attempt into cookie history
+      const existingHistoryRaw = cookieStore.get("custom_demo_history")?.value;
+      const demoHistory = existingHistoryRaw
+        ? JSON.parse(existingHistoryRaw)
+        : [];
+      demoHistory.push({
+        id: `log_${Date.now()}`,
+        userId: "demo-user-id",
         deckId,
-        lastStudied: new Date(),
-        highestAccuracy: accuracy,
-        timesReviewed: 1,
+        score: correctCount,
+        totalCards: totalAnswered,
+        accuracyPercentage: accuracy,
+        completedAt: nowString,
       });
+      cookieStore.set("custom_demo_history", JSON.stringify(demoHistory), {
+        path: "/",
+      });
+
+      // B) Update cumulative deck progress in cookies
+      const existingProgressRaw = cookieStore.get(
+        "custom_demo_progress",
+      )?.value;
+      let demoProgress = existingProgressRaw
+        ? JSON.parse(existingProgressRaw)
+        : [];
+      const progIndex = demoProgress.findIndex((p: any) => p.deckId === deckId);
+
+      if (progIndex > -1) {
+        demoProgress[progIndex] = {
+          ...demoProgress[progIndex],
+          lastStudied: nowString,
+          highestAccuracy: Math.max(
+            demoProgress[progIndex].highestAccuracy,
+            accuracy,
+          ),
+          timesReviewed: demoProgress[progIndex].timesReviewed + 1,
+        };
+      } else {
+        demoProgress.push({
+          userId: "demo-user-id",
+          deckId,
+          lastStudied: nowString,
+          highestAccuracy: accuracy,
+          timesReviewed: 1,
+        });
+      }
+      cookieStore.set("custom_demo_progress", JSON.stringify(demoProgress), {
+        path: "/",
+      });
+
+      // C) Housekeeping: Delete intermediate mid-session saves out of cookies
+      const existingSessionsRaw = cookieStore.get(
+        "custom_demo_sessions",
+      )?.value;
+      if (existingSessionsRaw) {
+        const demoSessions = JSON.parse(existingSessionsRaw).filter(
+          (s: any) => s.deckId !== deckId,
+        );
+        cookieStore.set("custom_demo_sessions", JSON.stringify(demoSessions), {
+          path: "/",
+        });
+      }
+    } else {
+      // --- AUTHENTICATED CLERK DB FLOW ---
+      const newLogItem = {
+        id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        userId: userId!,
+        deckId,
+        score: correctCount,
+        totalCards: totalAnswered,
+        accuracyPercentage: accuracy,
+        completedAt: new Date(),
+      };
+      db.studyHistoryLog.push(newLogItem);
+
+      const existingProgressIndex = db.deckProgress.findIndex(
+        (p) => p.userId === userId && p.deckId === deckId,
+      );
+
+      if (existingProgressIndex > -1) {
+        const existing = db.deckProgress[existingProgressIndex];
+        db.deckProgress[existingProgressIndex] = {
+          ...existing,
+          lastStudied: new Date(),
+          highestAccuracy: Math.max(existing.highestAccuracy, accuracy),
+          timesReviewed: existing.timesReviewed + 1,
+        };
+      } else {
+        db.deckProgress.push({
+          userId: userId!,
+          deckId,
+          lastStudied: new Date(),
+          highestAccuracy: accuracy,
+          timesReviewed: 1,
+        });
+      }
+
+      db.activeDeckSession = db.activeDeckSession.filter(
+        (session) => !(session.userId === userId && session.deckId === deckId),
+      );
     }
 
-    // C) HOUSEKEEPING: Delete intermediate save states
-    db.activeDeckSession = db.activeDeckSession.filter(
-      (session) => !(session.userId === userId && session.deckId === deckId),
-    );
+    // Standard cache tag invalidation updates both paths flawlessly
+    clearCache("decks");
 
-    // 3. Purge the Next.js data cache to instantly update UI elements
-    revalidatePath(`/decks/${deckId}`);
-    revalidatePath("/dashboard");
-
-    console.log(
-      `Successfully completed deck session tracking for user ${userId}`,
-    );
+    console.log(`Successfully completed deck session tracking.`);
     return { success: true };
   } catch (error) {
     console.error("Simulation failure in finalizeStudySessionAction:", error);
@@ -89,15 +162,53 @@ export async function saveActiveSessionAction(
   currentIndex: number,
   progress: Record<string, "correct" | "incorrect">,
 ) {
-  const db = await getDb();
-  const { userId } = await auth();
-  if (!userId) return { success: false };
+  let userId: string | null = null;
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    /* Ignore */
+  }
 
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  if (!userId && !isDemo) return { success: false };
+
+  if (isDemo) {
+    const existingSessionsRaw = cookieStore.get("custom_demo_sessions")?.value;
+    let demoSessions = existingSessionsRaw
+      ? JSON.parse(existingSessionsRaw)
+      : [];
+    const existingIndex = demoSessions.findIndex(
+      (s: any) => s.deckId === deckId,
+    );
+
+    const sessionPayload = {
+      userId: "demo-user-id",
+      deckId,
+      currentIndex,
+      progress,
+    };
+
+    if (existingIndex > -1) {
+      demoSessions[existingIndex] = sessionPayload;
+    } else {
+      demoSessions.push(sessionPayload);
+    }
+    cookieStore.set("custom_demo_sessions", JSON.stringify(demoSessions), {
+      path: "/",
+    });
+    return { success: true };
+  }
+
+  // Fallback database mutations for true profiles
+  const db = await getDb();
   const existingIndex = db.activeDeckSession.findIndex(
     (s) => s.userId === userId && s.deckId === deckId,
   );
 
-  const sessionPayload = { userId, deckId, currentIndex, progress };
+  const sessionPayload = { userId: userId!, deckId, currentIndex, progress };
 
   if (existingIndex > -1) {
     db.activeDeckSession[existingIndex] = sessionPayload;
@@ -110,10 +221,28 @@ export async function saveActiveSessionAction(
 
 // Fetch saved session progress on mount
 export async function getActiveSessionAction(deckId: string) {
-  const db = await getDb();
-  const { userId } = await auth();
-  if (!userId) return null;
+  let userId: string | null = null;
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+  } catch (e) {
+    /* Ignore */
+  }
 
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+  if (!userId && !isDemo) return null;
+
+  if (isDemo) {
+    const existingSessionsRaw = cookieStore.get("custom_demo_sessions")?.value;
+    if (!existingSessionsRaw) return null;
+
+    const demoSessions = JSON.parse(existingSessionsRaw);
+    return demoSessions.find((s: any) => s.deckId === deckId) || null;
+  }
+
+  const db = await getDb();
   return (
     db.activeDeckSession.find(
       (s) => s.userId === userId && s.deckId === deckId,
