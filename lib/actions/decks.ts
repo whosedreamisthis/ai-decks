@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { cache } from "react";
 import { getDb, setDecks } from "@/lib/db";
 import { MOCK_DECKS, EXAMPLE_DECK } from "@/lib/mock-data";
@@ -67,13 +67,14 @@ export async function createAiDeckAction(
 
   console.log("Updating tag and redirecting...");
   try {
-    updateTag("decks");
+    const clearDeckCache = revalidateTag as (tag: string) => void;
+    clearDeckCache("decks");
   } catch (e) {
     console.error("updateTag failed:", e);
   }
 
-  // Wait a bit to ensure state is flushed if needed,
-  // though typically redirect works fine.
+  const clearDeckCache = revalidateTag as (tag: string) => void;
+  clearDeckCache("decks");
   redirect(`/decks/${newDeckId}`);
 }
 
@@ -134,8 +135,6 @@ export const getDecks = async (filter: "active" | "archived" | "all") => {
           (d) => d.id === EXAMPLE_DECK.id && d.userId === userId,
         );
       }
-      // Note: We don't call updateTag("decks") here because this function
-      // is often called during render, and revalidation is unsupported there.
     }
   }
 
@@ -175,7 +174,8 @@ export const resetDecks = async () => {
     );
   }
 
-  updateTag("decks");
+  const clearDeckCache = revalidateTag as (tag: string) => void;
+  clearDeckCache("decks");
   console.log("Reset database to clean mock data state.");
 };
 
@@ -188,7 +188,8 @@ export const archiveDeck = async (deckId: string) => {
       deck.id === deckId ? { ...deck, status: "archived" } : deck,
     ),
   );
-  updateTag("decks");
+  const clearDeckCache = revalidateTag as (tag: string) => void;
+  clearDeckCache("decks");
 };
 
 export const unarchiveDeck = async (deckId: string) => {
@@ -198,7 +199,8 @@ export const unarchiveDeck = async (deckId: string) => {
       deck.id === deckId ? { ...deck, status: "active" } : deck,
     ),
   );
-  updateTag("decks");
+  const clearDeckCache = revalidateTag as (tag: string) => void;
+  clearDeckCache("decks");
 };
 
 export const deleteDeck = async (deckId: string) => {
@@ -221,5 +223,6 @@ export const deleteDeck = async (deckId: string) => {
     // For now, keeping history to preserve "Overall Proficiency" stats.
   }
 
-  updateTag("decks");
+  const clearDeckCache = revalidateTag as (tag: string) => void;
+  clearDeckCache("decks");
 };
