@@ -37,7 +37,7 @@ export async function POST(request: Request) {
           answer: "A family of multimodal AI models by Google.",
         },
       ]),
-    };
+    } as any;
     // const result = await ai.models.generateContent({
     //   model: "gemini-2.5-flash",
     //   contents: message,
